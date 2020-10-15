@@ -1,0 +1,63 @@
+{
+	id:'contractsMaintain',
+	columns:[
+	{
+		header: '项目名称',
+		dataIndex: 'pname',
+		width: 300,
+		align: 'left',
+		renderer: renderFoo
+	},{
+	    header: '合同名称',
+	    dataIndex: 'htmc',
+	    width: 200,
+	    align:'left',
+		renderer: renderFoo
+	},{
+	    header: '合同编号',
+	    dataIndex: 'htbh',
+	    width: 110,
+	    align:'left',
+		renderer: renderFoo
+	},{
+	    header: '合同类别 ',
+	    dataIndex: 'htypename',
+	    width: 90,
+	    align:'left',
+		renderer: renderFoo
+	},{
+	    header: '合同签订金额',
+	    dataIndex: 'htqdje',
+	    width: 120,
+	    align:'right',
+		renderer: regMoney
+	},{
+	    header: '录入时间',
+	    dataIndex: 'ctime',
+	    width: 120,
+	    align:'left',
+		renderer: renderFoo
+	},{
+	    header: '录入者',
+	    dataIndex: 'concreator',
+	    width: 120,
+	    align:'left',
+		renderer: renderFoo
+	}],
+	records:[
+		{name: 'proid', type: 'int'},
+		{name: 'pname', type: 'string'},
+		{name: 'id', type: 'int'},
+		{name: 'cmpid', type: 'string'},
+		{name: 'htmc', type: 'string'},
+		{name: 'htbh', type: 'string'},
+		{name: 'htypename', type: 'string'},
+		{name: 'htype', type: 'string'},
+		{name: 'htqdje', type: 'float'},
+		{name: 'ctime', type: 'string'},
+		{name: 'userid', type: 'string'},
+		{name: 'issubmit', type: 'int'},
+		{name: 'status', type: 'int'},
+		{name: 'concreator', type: 'string'}
+	]
+}

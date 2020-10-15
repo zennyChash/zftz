@@ -1,0 +1,52 @@
+{
+	id:'EProjects',
+	columns:[
+	{
+	    header: '项目编码',
+	    dataIndex: 'procode',
+	    width: 120,
+	    align:'left',
+		renderer: renderFoo
+	},{
+		header: '项目名称',
+		dataIndex: 'proname',
+		width: 300,
+		align: 'left',
+		renderer: renderFoo
+	},{
+		header: '建设单位',
+		dataIndex: 'divname',
+		width: 200,
+		align: 'left',
+		renderer: renderFoo
+	},{
+	    header: '项目管理分类',
+	    dataIndex: 'xmglflname',
+	    width: 130,
+	    align:'left',
+		renderer: renderFoo
+	},{
+	    header: '单位联系人',
+	    dataIndex: 'leadername',
+	    width: 90,
+	    align:'left',
+		renderer: renderFoo
+	},{
+	    header: '联系人电话',
+	    dataIndex: 'leadertel',
+	    width: 110,
+	    align:'left',
+		renderer: renderFoo
+	}],
+	records:[
+		{name: 'procode', type: 'string'},
+		{name: 'proname', type: 'string'},
+		{name: 'divcode', type: 'string'},
+		{name: 'divname', type: 'string'},
+		{name: 'xmguid', type: 'string'},
+		{name: 'xmglfl', type: 'string'},
+		{name: 'xmglflname', type: 'string'},
+		{name: 'leadername', type: 'string'},
+		{name: 'leadertel', type: 'string'}
+	]
+}

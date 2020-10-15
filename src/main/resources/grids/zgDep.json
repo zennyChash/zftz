@@ -1,0 +1,29 @@
+{
+	id:'zgDep',
+	columns:[
+	{
+		header: '主管部门名称',
+		dataIndex: 'name',
+		width: 200,
+		align: 'left',
+		renderer: renderFoo
+	},{
+	    header: '联系人',
+	    dataIndex: 'lxr',
+	    width: 100,
+	    align:'left',
+		renderer: renderFoo
+	},{
+	    header: '电话',
+	    dataIndex: 'phoneno',
+	    width: 110,
+	    align:'left',
+		renderer: renderFoo
+	}],
+	records:[
+		{name: 'code', type: 'string'},
+		{name: 'name', type: 'string'},
+		{name: 'lxr', type: 'string'},
+		{name: 'phoneno', type: 'string'}
+	]
+}

@@ -1,0 +1,192 @@
+{
+	id:'proBasicform2',
+	items:[
+	{
+	    name : 'id',
+		xtype : 'hidden',
+		value: ''
+	},{
+		layout:'column',
+		items:[
+		{
+			columnWidth:.5,
+			layout: 'form',
+			items:[
+			{ 
+			    fieldLabel :'项目名称',
+			    name : 'pname',
+			    width : 150,
+				xtype : 'textfield'
+			},{ 
+			    fieldLabel :'曾用名',
+			    name : 'cyname',
+			    width : 150,
+				xtype : 'textfield'
+			},{
+			    fieldLabel :'建设项目代码',
+			    name : 'pcode',
+			    width : 150,
+				xtype : 'textfield'
+			},{
+			    fieldLabel :'前期项目代码',
+			    name : 'cycode',
+			    width : 150,
+				xtype : 'textfield'
+			},tzmodeCombo
+			,xmglflCombo
+			,{
+				xtype : 'container',
+	            layout : 'column',
+                items  : [{
+               		columnWidth : '.80',
+					items: [{
+						fieldLabel :'市本级财政出资（万元）',
+					    name : 'bjczje',
+					    width : 150,
+						xtype : 'numberfield'
+					}]
+				},{
+					columnWidth : '.20',
+					items: [{
+						name : 'change',
+		                xtype: 'button',
+		                text: '附件',
+		                id: 'btn_bjczje',
+		                handler: fileUpload
+					}]
+				}]
+			},{
+				xtype : 'container',
+	            layout : 'column',
+                items  : [{
+               		columnWidth : '.80',
+					items: [{
+						fieldLabel :'批准建设内容及规模',
+						width:150,
+						xtype: 'textfield',
+						name: 'pzjsnr'
+					}]
+				},{
+					columnWidth : '.20',
+					items: [{
+						name : 'change',
+		                xtype: 'button',
+		                text: '附件',
+		                id: 'btn_pzjsnr',
+		                handler: fileUpload
+					}]
+				}]
+			},{
+				fieldLabel :'批准项目建设期限',
+			    name : 'jsqx',
+			    width : 150,
+				xtype : 'textfield'
+			},xmqxCombo]
+		},{
+			columnWidth:.5,
+			layout: 'form',
+			items:[{
+			    fieldLabel :'',
+			    name : 'entercode',
+				xtype : 'hidden'
+			},{
+			    fieldLabel :'项目建设单位',
+			    name : 'entername',
+			    width : 150,
+				xtype : 'textfield'
+			},{
+			    fieldLabel :'建设单位联系人',
+			    name : 'lxr',
+			    width : 150,
+				xtype : 'textfield'
+			},{
+			    fieldLabel :'联系人电话',
+			    name : 'lxrtel',
+			    width : 150,
+				xtype : 'textfield'
+			},zgdep,
+			{
+				fieldLabel :'主管部门联系人',
+			    name : 'zgtel',
+			    width : 150,
+				xtype : 'textfield'
+			},{
+			    fieldLabel :'联系人电话',
+			    name : 'zgtel',
+			    width : 150,
+				xtype : 'textfield'
+			},{
+			    fieldLabel :'开工日期',
+			    name : 'kgrq',
+			    width : 150,
+				xtype : 'textfield'
+			},{
+			    fieldLabel :'竣工验收日期',
+			    name : 'jgrq',
+			    width : 150,
+				xtype : 'textfield'
+			},{
+			    fieldLabel :'详细地址',
+			    name : 'address',
+			    width : 150,
+				xtype : 'textfield'
+			}]
+		}]
+	}
+	,{
+		layout:'column',
+		items:[
+		{
+			columnWidth:.5,
+			layout: 'form',
+			items:[
+			{
+				xtype : 'container',
+	            layout : 'column',
+                items  : [{
+               		columnWidth : '.80',
+					items: [{
+						fieldLabel :'项目决策依据文件',
+					    name : 'xmjcfile',
+					    width : 150,
+						xtype : 'textfield'
+					}]
+				},{
+					columnWidth : '.20',
+					items: [{
+						name : 'change',
+		                xtype: 'button',
+		                text: '附件',
+		                id: 'btn_xmjcfile',
+		                handler: fileUpload
+					}]
+				}]
+			}]
+		},{
+			columnWidth:.5,
+			layout: 'form',
+			items:[{
+				xtype : 'container',
+	            layout : 'column',
+                items  : [{
+               		columnWidth : '.80',
+					items: [{
+						fieldLabel :'出资责任政策文件',
+					    name : 'xmczzrfile',
+					    width : 150,
+						xtype : 'textfield'
+					}]
+				},{
+					columnWidth : '.20',
+					items: [{
+						name : 'change',
+		                xtype: 'button',
+		                text: '附件',
+		                id: 'btn_xmczzrfile',
+		                handler: fileUpload
+					}]
+				}]
+			}]
+		}]
+	}]
+}

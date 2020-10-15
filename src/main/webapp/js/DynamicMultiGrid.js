@@ -1,0 +1,257 @@
+Ext.ns('App.ux');
+App.ux.defaultPageSize=40;
+App.ux.DynamicGridPanel = function(config) {
+	config = config || {};
+	Ext.apply(this, config);
+
+	var plugins = [new Ext.ux.grid.GridExporter({
+		mode : this.mode ? this.mode : 'remote',
+		maxExportRows :30000
+	})];
+	if (config.plugins) {
+		plugins = plugins.concat(config.plugins);
+	}
+
+	Ext.apply(config, {
+		plugins : plugins
+	});
+	if (!this.sm) {
+		if (this.checkboxSelect) {
+			this.sm = new Ext.grid.CheckboxSelectionModel({
+				singleSelect : config.singleSelect
+						? config.singleSelect
+						: false,
+				listeners : config.listeners
+			});
+		} else {
+			this.sm = new Ext.grid.RowSelectionModel({
+				singleSelect : config.singleSelect ? config.singleSelect : true,
+				listeners : config.listeners
+			});
+		}
+	}
+
+	if (this.columns && this.columns.length > 0 && this.checkboxSelect) {
+		this.columns = [].concat(this.sm).concat(this.columns);
+	}
+	if (this.columns) {
+		this.colModel = this.columns;
+	}
+	if (this.cm) {
+		this.colModel = this.cm;
+	}
+	if (Ext.isArray(this.colModel)) {
+		this.colModel = new Ext.grid.ColumnModel({
+			columns : this.colModel,
+			defaults : {
+				sortable : false,
+				menuDisabled : true
+			}
+		});
+	}
+	this.enableColumnMove = config.enableColumnMove
+			? config.enableColumnMove
+			: false;
+	this.actExportXLS = new Ext.Action({
+		text : '导出',
+		iconCls : 'expExcel',
+		scope : this,
+		handler : function(btn, e) {
+			this.exportExcel();
+			//var expUrl='getRptData.query?doType=toExcel&rptID='+this.id;
+	        //window.open(expUrl,"","scrollbars=auto,toolbar=yes,location=no,directories=no,status=no,menubar=yes,resizable=yes,width=780,height=500,left=10,top=50");
+		}
+	});
+	var btns = [this.actExportXLS];
+	if (config.tbar) {
+		btns = config.tbar.concat(btns);
+	}
+	Ext.apply(config, {
+		tbar : btns
+	});
+	if (this.bbar || (this.disablePaging && this.disablePaging == true)) {
+	} else {
+		var count = App.ux.defaultPageSize;
+		if (this.pageCount) {
+			count = this.pageCount;
+		}
+		Ext.apply(config, {
+			bbar : {
+				xtype : 'paging',
+				pageSize : count,
+				displayInfo : true,
+				store : this.store,
+				displayMsg : '当前 {0} - {1} &nbsp;&nbsp; 共 {2}条',
+				emptyMsg : '没有数据'//,
+			}
+		});
+	}
+	App.ux.DynamicGridPanel.superclass.constructor.call(this, config);
+};
+
+Ext.extend(App.ux.DynamicGridPanel, Ext.grid.GridPanel, {
+	columns : [],
+	metaDataLoaded : false,
+	viewConfig : {
+		emptyText : "没有数据",
+		onDataChange : function() {
+			if (this.cm.getColumnCount() == 0
+					&& this.ds.reader.jsonData.metaData.columns) {
+				columns = this.ds.reader.jsonData.metaData.columns;
+				if (this.grid.checkboxSelect) {
+					columns = [].concat(this.grid.selModel).concat(columns);
+				}
+				this.cm.setConfig(columns);
+				this.syncFocusEl(0);
+				return;
+			}
+			this.refresh();
+			this.updateHeaderSortState();
+			this.syncFocusEl(0);
+		}
+	},
+	loadMask : true
+});
+
+Ext.reg('DynamicGridPanel', App.ux.DynamicGridPanel);
+
+App.ux.columnTipRender = function(value, p, record) {
+	if (value) {
+		p.attr = 'title="' + value + '"';
+	}
+	return value;
+};
+
+/**
+ * @class App.ux.DynamicGridPanelMulti
+ * @overrides onDataChange
+ * @author jlong
+ * @date 2013-04-15 Adds support the grid to assign the column width by the
+ *       column content
+ */
+App.ux.DynamicGridPanelMulti = Ext.extend(App.ux.DynamicGridPanel, {
+	columns : [],
+	viewConfig : {
+		emptyText : "没有数据",
+		onDataChange : function() {
+			var columns = this.cm.config;
+			if (this.ds.reader.jsonData.metaData
+					&& this.ds.reader.jsonData.metaData.columns) {
+				columns = this.ds.reader.jsonData.metaData.columns;
+			}
+			var ttbars;
+			if(!this.grid.metaDataLoaded){
+				this.grid.getTopToolbar().removeAll(true);
+				this.grid.getTopToolbar().doLayout();
+				if (this.ds.reader.jsonData.metaData
+						&& this.ds.reader.jsonData.metaData.ttbars) {
+					ttbars = this.ds.reader.jsonData.metaData.ttbars;
+				}
+			}
+			var _len = columns.length;
+			for (var _coli = 0; _coli < _len; _coli++) {
+				columns[_coli].renderer = renderFoo;
+				if(columns[_coli].renderer&&typeof(columns[_coli].renderer)=="string"){
+					columns[_coli].renderStr = columns[_coli].renderer;
+					columns[_coli].renderer=App.rpt.Renders[columns[_coli].renderer];
+				}else if(columns[_coli].isLink>0){//no renderer,as a link column,it need renderer
+					columns[_coli].renderer=App.rpt.Renders["renderFoo"];
+				}
+				columns[_coli].header="<div style='text-align:center;'>"+columns[_coli].header+"</div>"
+			}
+
+			// 判断初始化多选框列
+			if (this.grid.checkboxSelect) {
+				columns = [].concat(this.grid.selModel).concat(columns);
+			}
+			this.cm.setConfig(columns);
+			//2015-12复杂表头
+			if (this.ds.reader.jsonData.metaData
+					&& this.ds.reader.jsonData.metaData.headRows) {
+				var hrows = this.ds.reader.jsonData.metaData.headRows;
+				if(hrows.length>0){
+					this.cm.rows = hrows;
+				}
+			}
+			var tmpRptId="";
+			if(ttbars&&ttbars.length>0){
+				for(var i=0;i<ttbars.length;i++){
+					var it = ttbars[i];
+					tmpRptId = it.rptID;
+					if(it.xtype=="combo"){
+						it.store = cbStore;
+						it.mode = "remote";
+						it.listeners = {
+						    beforequery: function(qe){
+								cbStore.baseParams.pName = qe.combo.getName();
+								cbStore.baseParams.rptID = this.rptID;
+								var tmpPost={},mps = {};
+								var aBy = qe.combo.affectedBy;
+								if(aBy){
+									var aparas = aBy.split(",");
+									mps = new Object();
+									for(var i = 0;i<aparas.length;i++){
+										var tp = aparas[i];
+										var tcmp = Ext.getCmp("q_h_"+this.rptID+"_"+tp);
+										if(tcmp){
+											var val =tcmp.getValue();
+											mps[aparas]=val;
+										}
+									}
+									tmpPost.macroParams = mps;
+								}
+								cbStore.baseParams.affectedBy = Ext.encode(tmpPost);
+								cbStore.load();
+							},
+							select: function(combo, record, index) {
+								Ext.getCmp('q_h_'+this.rptID+"_"+this.id.substring(3+this.rptID.length)).setValue(record.get('bm'));
+								var affs = combo.affect;
+								var arrCmps = affs?affs.split(","):[];
+								for(var i=0;i<arrCmps.length;i++){
+									var cp = Ext.getCmp("q_"+this.rptID+"_"+arrCmps[i]);
+									if(cp){
+										cp.setValue("");
+									}
+									var hcp = Ext.getCmp("q_h_"+this.rptID+"_"+arrCmps[i]);
+									if(hcp){
+										hcp.setValue("");
+									}
+								}
+							}
+						}
+					}else if(it.xtype=="trigger"){
+						it.editable = false;
+						it.destroy = Ext.emptyFn;
+						it.onTriggerClick=function(){
+							var t_o = this;
+							var trptid = t_o.rptID,tmpid = t_o.id.substring(3+t_o.rptID.length);
+							var tmpMulti=t_o.isMulti,tmpLeaf=t_o.onlyLeaf,tmpLabel = t_o.fieldLabel,tmpRc=t_o.rootCanCheck;
+							showQparamTreeByRptID(trptid,tmpid,tmpMulti,tmpLeaf,tmpLabel,tmpRc);
+						};
+					}
+					this.grid.getTopToolbar().add(it);
+					if(it.xtype!="label"&&it.xtype!="hidden"){
+						this.grid.getTopToolbar().addSeparator();
+					}
+				}
+				this.id = tmpRptId;
+				this.grid.getTopToolbar().addButton({
+					text: '查询',
+		            iconCls: 'filter',
+		            handler : function(){
+						buildConditionByRptID(tmpRptId); 
+					}
+				});
+			}
+			
+			//this.grid.metaDataLoaded = true;
+			this.grid.getTopToolbar().doLayout();
+			this.refresh(true);
+			//this.updateHeaderSortState();
+			this.syncFocusEl(0);
+		}
+	},
+	loadMask : true
+});
+
+Ext.reg('DynamicGridPanelMulti', App.ux.DynamicGridPanelMulti);

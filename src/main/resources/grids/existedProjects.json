@@ -1,0 +1,54 @@
+{
+	id:'existedProjects',
+	columns:[
+	{
+		header: '项目名称',
+		dataIndex: 'pname',
+		width: 300,
+		align: 'left',
+		renderer: renderFoo
+	},{
+	    header: '建设单位',
+	    dataIndex: 'enname',
+	    width: 200,
+	    align:'left',
+		renderer: renderFoo
+	},{
+	    header: '项目管理分类',
+	    dataIndex: 'xmglflname',
+	    width: 110,
+	    align:'left',
+		renderer: renderFoo
+	},{
+	    header: '项目专管人',
+	    dataIndex: 'pmanager',
+	    width: 90,
+	    align:'left',
+		renderer: renderFoo
+	},{
+	    header: '项目引入者',
+	    dataIndex: 'pcreator',
+	    width: 110,
+	    align:'left',
+		renderer: renderFoo
+	},{
+	    header: '引入时间',
+	    dataIndex: 'ctime',
+	    width: 120,
+	    align:'left',
+		renderer: renderFoo
+	}],
+	records:[
+		{name: 'id', type: 'int'},
+		{name: 'pcode', type: 'string'},
+		{name: 'pname', type: 'string'},
+		{name: 'tzlx', type: 'string'},
+		{name: 'enname', type: 'string'},
+		{name: 'emcount', type: 'int'}, 
+		{name: 'fp_id', type: 'string'},
+		{name: 'xmglflname', type: 'string'},
+		{name: 'pcreator', type: 'string'},
+		{name: 'ctime', type: 'string'},
+		{name: 'pmanager', type: 'string'}
+	]
+}

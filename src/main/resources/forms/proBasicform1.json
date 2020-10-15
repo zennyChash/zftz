@@ -1,0 +1,404 @@
+{
+	id:'proBasicform1',
+	items:[
+	{
+	    name : 'id',
+		xtype : 'hidden',
+		value: ''
+	},{
+		layout:'column',
+		items:[
+		{
+			columnWidth:.5,
+			layout: 'form',
+			items:[
+			{ 
+			    fieldLabel :'项目名称',
+			    name : 'pname',
+			    width : 150,
+				xtype : 'textfield'
+			},{ 
+			    fieldLabel :'曾用名',
+			    name : 'cyname',
+			    width : 150,
+				xtype : 'textfield'
+			},{
+			    fieldLabel :'建设项目代码',
+			    name : 'pcode',
+			    width : 150,
+				xtype : 'textfield'
+			},{
+			    fieldLabel :'前期项目代码',
+			    name : 'cycode',
+			    width : 150,
+				xtype : 'textfield'
+			},tzmodeCombo
+			,xmglflCombo
+			,{
+				xtype : 'container',
+	            layout : 'column',
+                items  : [{
+               		columnWidth : '.80',
+					items: [{
+						fieldLabel :'市本级财政出资（万元）',
+					    name : 'bjczje',
+					    width : 150,
+						xtype : 'numberfield'
+					}]
+				},{
+					columnWidth : '.20',
+					items: [{
+						name : 'change',
+		                xtype: 'button',
+		                text: '附件',
+		                id: 'btn_bjczje',
+		                handler: fileUpload
+					}]
+				}]
+			},{
+				xtype : 'container',
+	            layout : 'column',
+                items  : [{
+               		columnWidth : '.80',
+					items: [{
+						fieldLabel :'批准建设内容及规模',
+						width:150,
+						xtype: 'textfield',
+						name: 'pzjsnr'
+					}]
+				},{
+					columnWidth : '.20',
+					items: [{
+						name : 'change',
+		                xtype: 'button',
+		                text: '附件',
+		                id: 'btn_pzjsnr',
+		                handler: fileUpload
+					}]
+				}]
+			},{
+				fieldLabel :'批准项目建设期限',
+			    name : 'jsqx',
+			    width : 150,
+				xtype : 'textfield'
+			},xmqxCombo]
+			
+		},{
+			columnWidth:.5,
+			layout: 'form',
+			items:[{
+			    fieldLabel :'',
+			    name : 'entercode',
+				xtype : 'hidden'
+			},{
+			    fieldLabel :'项目建设单位',
+			    name : 'entername',
+			    width : 150,
+				xtype : 'textfield'
+			},{
+			    fieldLabel :'建设单位联系人',
+			    name : 'lxr',
+			    width : 150,
+				xtype : 'textfield'
+			},{
+			    fieldLabel :'联系人电话',
+			    name : 'lxrtel',
+			    width : 150,
+				xtype : 'textfield'
+			},zgdep,
+			{
+				fieldLabel :'主管部门联系人',
+			    name : 'zgtel',
+			    width : 150,
+				xtype : 'textfield'
+			},{
+			    fieldLabel :'联系人电话',
+			    name : 'zgtel',
+			    width : 150,
+				xtype : 'textfield'
+			},{
+			    fieldLabel :'开工日期',
+			    name : 'kgrq',
+			    width : 150,
+				xtype : 'textfield'
+			},{
+			    fieldLabel :'竣工验收日期',
+			    name : 'jgrq',
+			    width : 150,
+				xtype : 'textfield'
+			},{
+			    fieldLabel :'详细地址',
+			    name : 'address',
+			    width : 150,
+				xtype : 'textfield'
+			}]
+		}]
+	}
+	,progressCobo
+	,{
+		layout:'column',
+		items:[
+		{
+			columnWidth:.5,
+			layout: 'form',
+			items:[
+			{ 
+				xtype : 'container',
+	            layout : 'column',
+                items  : [{
+               		columnWidth : '.80',
+					items: [{
+						fieldLabel :'项目估算金额（万元）',
+					    name : 'guje',
+					    width : 150,
+						xtype : 'numberfield'
+					}]
+				},{
+					columnWidth : '.20',
+					items: [{
+						name : 'change',
+		                xtype: 'button',
+		                text: '附件',
+		                id: 'btn_guje',
+		                handler: fileUpload
+					}]
+				}]
+			},{ 
+				xtype : 'container',
+	            layout : 'column',
+                items  : [{
+               		columnWidth : '.80',
+					items: [{
+						fieldLabel :'批准投资估算文号',
+					    name : 'gufileno',
+					    width : 150,
+						xtype : 'textfield'
+					}]
+				},{
+					columnWidth : '.20',
+					items: [{
+						name : 'change',
+		                xtype: 'button',
+		                text: '附件',
+		                id: 'btn_gufileno',
+		                handler: fileUpload
+					}]
+				}]
+			},{
+				xtype : 'container',
+	            layout : 'column',
+                items  : [{
+               		columnWidth : '.80',
+					items: [{
+						fieldLabel :'估算金额调整1',
+					    name : 'gujetz1',
+					    width : 150,
+						xtype : 'numberfield'
+					}]
+				},{
+					columnWidth : '.20',
+					items: [{
+						name : 'change',
+		                xtype: 'button',
+		                text: '附件',
+		                id: 'btn_gujetz1',
+		                handler: fileUpload
+					}]
+				}]
+			},{ 
+				xtype : 'container',
+	            layout : 'column',
+                items  : [{
+               		columnWidth : '.80',
+					items: [{
+						fieldLabel :'估算调整1决策依据',
+					    name : 'gutzfile1',
+					    width : 150,
+						xtype : 'textfield'
+					}]
+				},{
+					columnWidth : '.20',
+					items: [{
+						name : 'change',
+		                xtype: 'button',
+		                text: '附件',
+		                id: 'btn_gutzfile1',
+		                handler: fileUpload
+					}]
+				}]
+			},{
+				xtype : 'container',
+	            layout : 'column',
+                items  : [{
+               		columnWidth : '.80',
+					items: [{
+						fieldLabel :'估算金额调整2',
+					    name : 'gujetz2',
+					    width : 150,
+						xtype : 'numberfield'
+					}]
+				},{
+					columnWidth : '.20',
+					items: [{
+						name : 'change',
+		                xtype: 'button',
+		                text: '附件',
+		                id: 'btn_gujetz2',
+		                handler: fileUpload
+					}]
+				}]
+			},{ 
+				xtype : 'container',
+	            layout : 'column',
+                items  : [{
+               		columnWidth : '.80',
+					items: [{
+						fieldLabel :'估算调整2决策依据',
+					    name : 'gutzfile2',
+					    width : 150,
+						xtype : 'textfield'
+					}]
+				},{
+					columnWidth : '.20',
+					items: [{
+						name : 'change',
+		                xtype: 'button',
+		                text: '附件',
+		                id: 'btn_gutzfile2',
+		                handler: fileUpload
+					}]
+				}]
+			}]
+		},{
+			columnWidth:.5,
+			layout: 'form',
+			items:[{ 
+				xtype : 'container',
+	            layout : 'column',
+                items  : [{
+               		columnWidth : '.80',
+					items: [{
+						fieldLabel :'项目概算金额（万元）',
+					    name : 'gaije',
+					    width : 150,
+						xtype : 'numberfield'
+					}]
+				},{
+					columnWidth : '.20',
+					items: [{
+						name : 'change',
+		                xtype: 'button',
+		                text: '附件',
+		                id: 'btn_gaije',
+		                handler: fileUpload
+					}]
+				}]
+			},{ 
+				xtype : 'container',
+	            layout : 'column',
+                items  : [{
+               		columnWidth : '.80',
+					items: [{
+						fieldLabel :'批准投资概算文号',
+					    name : 'gaifileno',
+					    width : 150,
+						xtype : 'textfield'
+					}]
+				},{
+					columnWidth : '.20',
+					items: [{
+						name : 'change',
+		                xtype: 'button',
+		                text: '附件',
+		                id: 'btn_gaifileno',
+		                handler: fileUpload
+					}]
+				}]
+			},{
+				xtype : 'container',
+	            layout : 'column',
+                items  : [{
+               		columnWidth : '.80',
+					items: [{
+						fieldLabel :'概算金额调整1',
+					    name : 'gaijetz1',
+					    width : 150,
+						xtype : 'numberfield'
+					}]
+				},{
+					columnWidth : '.20',
+					items: [{
+						name : 'change',
+		                xtype: 'button',
+		                text: '附件',
+		                id: 'btn_gaijetz1',
+		                handler: fileUpload
+					}]
+				}]
+			},{ 
+				xtype : 'container',
+	            layout : 'column',
+                items  : [{
+               		columnWidth : '.80',
+					items: [{
+						fieldLabel :'概算调整1决策依据',
+					    name : 'gutzfile1',
+					    width : 150,
+						xtype : 'textfield'
+					}]
+				},{
+					columnWidth : '.20',
+					items: [{
+						name : 'change',
+		                xtype: 'button',
+		                text: '附件',
+		                id: 'btn_gutzfile1',
+		                handler: fileUpload
+					}]
+				}]
+			},{
+				xtype : 'container',
+	            layout : 'column',
+                items  : [{
+               		columnWidth : '.80',
+					items: [{
+						fieldLabel :'概算金额调整2',
+					    name : 'gaijetz2',
+					    width : 150,
+						xtype : 'numberfield'
+					}]
+				},{
+					columnWidth : '.20',
+					items: [{
+						name : 'change',
+		                xtype: 'button',
+		                text: '附件',
+		                id: 'btn_gaijetz2',
+		                handler: fileUpload
+					}]
+				}]
+			},{ 
+				xtype : 'container',
+	            layout : 'column',
+                items  : [{
+               		columnWidth : '.80',
+					items: [{
+						fieldLabel :'概算调整2决策依据',
+					    name : 'gaitzfile2',
+					    width : 150,
+						xtype : 'textfield'
+					}]
+				},{
+					columnWidth : '.20',
+					items: [{
+						name : 'change',
+		                xtype: 'button',
+		                text: '附件',
+		                id: 'btn_gaitzfile2',
+		                handler: fileUpload
+					}]
+				}]
+			}]
+		}]
+	}]
+}

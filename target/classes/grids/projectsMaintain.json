@@ -1,0 +1,48 @@
+{
+	id:'projectsMaintain',
+	columns:[
+	{
+		header: '项目名称',
+		dataIndex: 'pname',
+		width: 300,
+		align: 'left',
+		renderer: renderFoo
+	},{
+	    header: '建设单位',
+	    dataIndex: 'ename',
+	    width: 200,
+	    align:'left',
+		renderer: renderFoo
+	},{
+	    header: '项目管理分类',
+	    dataIndex: 'xmglflname',
+	    width: 110,
+	    align:'left',
+		renderer: renderFoo
+	},{
+	    header: '项目专管人',
+	    dataIndex: 'pmanager',
+	    width: 90,
+	    align:'left',
+		renderer: renderFoo
+	},{
+	    header: '引入时间',
+	    dataIndex: 'ctime',
+	    width: 120,
+	    align:'left',
+		renderer: renderFoo
+	}],
+	records:[
+		{name: 'id', type: 'int'},
+		{name: 'pcode', type: 'string'},
+		{name: 'pname', type: 'string'},
+		{name: 'tzmode', type: 'string'},
+		{name: 'tzlx', type: 'string'},
+		{name: 'ename', type: 'string'},
+		{name: 'xmglflname', type: 'string'},
+		{name: 'ctime', type: 'string'},
+		{name: 'issubmit', type: 'int'},
+		{name: 'status', type: 'int'},
+		{name: 'pmanager', type: 'string'}
+	]
+}
