@@ -1109,7 +1109,7 @@ zgds.on("beforeload",function(store,options){
 	}
 	zgds.baseParams={
 		jsonData: Ext.encode({
-			dataID : 'zgDep',
+			dataID : 'zgDeps',
 			queryParams : jparams
 		})
 	};
