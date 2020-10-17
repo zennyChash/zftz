@@ -2210,6 +2210,7 @@ var modifyWin = new Ext.Window({
         	var mkey = cProRd.get("id");
         	var fld = mform.getForm().findField("modifyFld").getValue();
 			var ft = mfDs.getById(fld).get("fldtype"); 
+			var isattach = mfDs.getById(fld).get("isattach"); 
 			var newval = mform.getForm().findField("newValue").getValue();
 			if(ft==2){
 				newval = mform.getForm().findField("newValueCb").getValue();
@@ -2218,6 +2219,7 @@ var modifyWin = new Ext.Window({
 				module:'0',
 				mkey: mkey,
 				fld: fld,
+				isattach: isattach,
 				newval:newval,
 				remark: mform.getForm().findField("remark").getValue(),
 				

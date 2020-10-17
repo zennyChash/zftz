@@ -468,7 +468,7 @@ jds.on("beforeload",function(store,options){
 	}
 	jds.baseParams={
 		jsonData: Ext.encode({
-			dataID : 'proJqhbcl',
+			dataID : 'jqhbcl',
 			queryParams : jparams
 		})
 	};
@@ -1594,11 +1594,12 @@ var commentWin = new Ext.Window({
 			var checkParams = {
 				module:'0',
 				mkey : cProRd.get("proid"),
+				id: cProRd.get("id"),
+				remark: remark,
 				proid: cProRd.get("proid"),
 				pname: cProRd.get("pname"),
-				id: cProRd.get("id"),
-				opType: checkMode,
-				remark: remark
+				opType: checkMode
+				
 			};
 			var dataID = "";
 			if(checkMode=='checkBasic'){
@@ -1609,6 +1610,7 @@ var commentWin = new Ext.Window({
 				dataID = 'rollbackCheck';
 				checkParams.allback=1;
 				checkParams.aid=cProRd.get("aid");
+				checkParams.backfld='';
 			}else if(checkMode=='rollbackFld'){
 				dataID = 'rollbackCheck';
 				checkParams.allback=0;
