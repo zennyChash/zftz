@@ -85,7 +85,7 @@ var ccm = new Ext.grid.ColumnModel({
 		renderer: renderFoo
 	},{
 	    header: "审批状态",
-	    dataIndex: 'checkstate',
+	    dataIndex: 'checkstatus',
 	    width: 70,
 	    align:'left',
 		renderer: function(v,p,r){
@@ -99,7 +99,7 @@ var ccm = new Ext.grid.ColumnModel({
 		}
 	},{
 	    header: "支付状态",
-	    dataIndex: 'paystate',
+	    dataIndex: 'paystatus',
 	    width: 70,
 	    align:'left',
 		renderer: function(v,p,r){
@@ -128,8 +128,8 @@ var cRd = Ext.data.Record.create  ([
 	{name: 'recbankno', type: 'string'},
 	{name: 'userid', type: 'string'},
 	{name: 'username', type: 'string'},
-	{name: 'checkstate', type: 'int'},
-	{name: 'paystate', type: 'int'},
+	{name: 'checkstatus', type: 'int'},
+	{name: 'paystatus', type: 'int'},
 	{name: 'ctime', type: 'string'}
 ]);
 var ds = new Ext.data.Store({
@@ -295,7 +295,7 @@ var contractCombo = new Ext.form.ComboBox({
 	width : 120,
 	hiddenName: 'cid',
 	fieldLabel: "合同",
-	displayField : 'htbh',
+	displayField : 'mc',
     valueField : 'id',
     typeAhead : true,
     mode : 'remote',
@@ -349,7 +349,7 @@ recDs.on("beforeload",function(store,options){
 	}
 	recDs.baseParams={
 		jsonData: Ext.encode({
-			dataID : 'recOfContracts',
+			dataID : 'recsOfContract',
 			queryParams : jparams
 		})
 	};

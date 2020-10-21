@@ -238,4 +238,55 @@ public class AuthController {
 		jr.setRetData(jo);
 		return jr;
 	}
+	@RequestMapping("/encryptLogin")
+	@ResponseBody
+	public JResponse encryptLogin(@RequestParam("encryptUserid") String encryptUserid,@RequestParam(required=false) String encryptPswd){
+		JResponse jr = new JResponse();
+	    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    //先用原始的用户ID验证是否存在
+	    int flag = -1;
+		try{
+			flag = authService.validateUser(encryptUserid);
+		}catch(Exception e){
+			jr.setRetCode("9");
+			jr.setRetMsg("验证登录过程中发生错误！");
+			jr.setRetData(null);
+			return jr;
+		}
+		//如果不存在，则用解密算法解密之后再测一次
+		String decryptedUserid = authService.decrypt(encryptUserid);
+		if(flag==-1){
+			try{
+				flag = authService.validateUser(decryptedUserid);
+			}catch(Exception e){
+				jr.setRetCode("9");
+				jr.setRetMsg("验证登录过程中发生错误！");
+				jr.setRetData(null);
+				return jr;
+			}
+		}
+		if(flag==0){
+			log.info("用户"+decryptedUserid+"于"+df.format(new Date())+"登录系统！");
+			jr.setRetCode("0");
+			jr.setRetMsg("");
+			Map um = authService.getUserInfo(decryptedUserid);//用户的中文名，类型
+			jr.setRetData(um);
+			RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
+			HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+			HttpServletResponse response = ((ServletRequestAttributes) requestAttributes).getResponse();
+			if (requestAttributes != null) {
+				request = ((ServletRequestAttributes) requestAttributes).getRequest();
+			}
+			if(request!=null){
+				request.getSession().setAttribute("user", um);
+				String userid=um==null?"":(String)um.get("ID");
+		    	request.getSession().setAttribute("userid", userid);
+		    }
+		}else if(flag==-1){
+			jr.setRetCode("-1");
+			jr.setRetMsg("用户账户不存在！");
+			log.info("用户"+decryptedUserid+"于"+df.format(new Date())+"登录,用户账户不存在！");
+		}
+		return jr;
+	}
 }

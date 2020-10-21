@@ -53,7 +53,7 @@ var ds = new Ext.data.GroupingStore({
 	remoteSort: true,
 	groupField: 'proid',
 	reader: new Ext.data.JsonReader({
-		idProperty:'id',
+		idProperty:'cmpid',
 		root: 'retData.rows',
 		totalProperty: 'retData.totalCount'
 	}, conRd)
@@ -179,7 +179,7 @@ var cform = new Ext.FormPanel({
 	{
 	    name : 'id',
 		xtype : 'hidden',
-		value: ''
+		value: '-1'
 	},{
 	    name : 'proid',
 		xtype : 'hidden',
@@ -324,7 +324,7 @@ var cform = new Ext.FormPanel({
 				xtype : 'numberfield'
 			},{
 			    fieldLabel :'签订合同总额',
-			    name : 'htzje',
+			    name : 'htze',
 			    width : 150,
 				xtype : 'numberfield'
 			},{
@@ -726,8 +726,10 @@ function saveBankInfo(silent){
 				Ext.getBody().unmask();
 			   	var o = Ext.util.JSON.decode(response.responseText);
 			   	if(o&&o.retCode=="0"){
+			   		alert(o.retData.info);
 			   		cCid = o.retData.info;
 			   		cHtRd.set("id",o.retData.info);
+			   		cform.getForm().findField("id").setValue(o.retData.info);
 			   		saveBankRows(cAccs,silent);
 			   	}else{
 			   		Ext.Msg.alert('错误',o&&o.retMsg?o.retMsg:"增加合同信息时发生错误！");
@@ -803,7 +805,7 @@ function saveBankRows(cAccs,silent){
 		   	}
 		},
 		failure : function(response,options) {
-			Ext.Msg.alert('错误',"保存项目关联企业时发生错误，详细错误请咨询管理员！");
+			Ext.Msg.alert('错误',"保存银行开户信息时发生错误，详细错误请咨询管理员！");
 			Ext.getBody().unmask();
 	  	}
 	});
@@ -886,7 +888,7 @@ conWin.on("show",function(){
 		Ext.getCmp("btn_save").enable();
 	}
 	//加载合同信息
-	var kdata={proid :cHtRd.get("proid"), id:cCid};
+	var kdata={proid :cHtRd.get("proid"), id: cCid};
 	Ext.Ajax.request({
 		url: '../xmgl/getSingleRecord',
 		method : 'post',
@@ -956,9 +958,9 @@ function saveContract(changedFlds,issubmit){
 		//开户行保存
    		saveBankInfo(true);
 	}else{
-		changedFlds.proid = cform.getForm().findField("proid").getValue();
+		changedFlds.proid =  cHtRd.get("proid");
 		changedFlds.pname = cHtRd.get("pname");
-		changedFlds.cid = cform.getForm().findField("id").getValue();
+		changedFlds.cid = cCid;
 		changedFlds.htbh = cform.getForm().findField("htbh").getValue();
 		//删除不在项目表中的冗余字段
 		delete changedFlds.jsdwmc;
@@ -978,7 +980,7 @@ function saveContract(changedFlds,issubmit){
 			   	var o = Ext.util.JSON.decode(response.responseText);
 			   	if(o&&o.retCode=="0"){
 			   		cCid = o.retData.info;
-				   	cHtRd.set("id",o.retData.info);
+				   	cHtRd.set("",o.retData.info);
 				    //开户行保存
 			   		saveBankInfo(true);
 			   		Ext.Msg.alert('信息',"合同信息已保存！");
@@ -1052,14 +1054,14 @@ var uploadForm = new Ext.FormPanel({
 								"Content-Type": "application/json;charset=utf-8"
 							},
 							params : Ext.encode({
-								updateParams : Ext.encode(),
+								updateParams : Ext.encode(uInfo),
 								dataID: 'contractAppendixJe'
 							}),
 							success : function(response, options) {
 								Ext.getBody().unmask();
 							   	var o = Ext.util.JSON.decode(response.responseText);
 							   	if(o&&o.retCode=="0"){
-							   		cForm.getForm().findField("htzje").setValue(p.retData.info);
+							   		cForm.getForm().findField("htze").setValue(p.retData.info);
 							   	}else{
 							   		Ext.Msg.alert('错误',o&&o.retMsg?o.retMsg:"保存时发生错误！");
 							   	}
@@ -1240,9 +1242,11 @@ function fileUpload (btn,e){
 				Ext.getBody().unmask();
 			   	var o = Ext.util.JSON.decode(response.responseText);
 			   	if(o&&o.retCode=="0"){
-			   		fileWin.show();
+			   		alert(o.retData.info);
 			   		cCid = o.retData.info;
 			   		cHtRd.set("id",o.retData.info);
+			   		cform.getForm().findField("id").setValue(o.retData.info);
+			   		fileWin.show();
 			   	}else{
 			   		Ext.Msg.alert('错误',o&&o.retMsg?o.retMsg:"增加合同信息时发生错误！");
 			   	}

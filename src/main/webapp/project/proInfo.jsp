@@ -2261,8 +2261,8 @@ var modifyWin = new Ext.Window({
 modifyWin.on("show",function(){
 	mform.getForm().findField("newValue").setValue("");
 	mform.getForm().findField("newValue").show();
-	mform.getForm().findField("newValue_cb").setValue("");
-	mform.getForm().findField("newValue_cb").hide();
+	mform.getForm().findField("newValueCb").setValue("");
+	mform.getForm().findField("newValueCb").hide();
 	//Ext.getCmp("md_attachFilePath").setRawValue('');
 	//Ext.getCmp("md_attachFilePath").hide();
 });

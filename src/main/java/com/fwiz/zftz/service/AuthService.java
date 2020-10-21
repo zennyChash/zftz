@@ -294,4 +294,9 @@ public class AuthService {
 		return modules;
 	}
 
+	public int validateUser(String userid) {
+		//用的是和e平台相同的用户库，暂且都认为合法
+		return 0;
+	}
+
 }
