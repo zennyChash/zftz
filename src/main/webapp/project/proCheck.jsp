@@ -840,7 +840,7 @@ var pform1 = new Ext.FormPanel({
 						fieldLabel:'主管单位',
 						width:150,
 						xtype : 'textfield',
-						name:'zgdw',
+						name:'zgdep_name',
 						readOnly:true,
 						style:'background:none;'
 					}]

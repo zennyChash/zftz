@@ -58,6 +58,8 @@
 		{name: 'userid', type: 'string'},
 		{name: 'issubmit', type: 'int'},
 		{name: 'status', type: 'int'},
-		{name: 'concreator', type: 'string'}
+		{name: 'concreator', type: 'string'},
+		{name: 'jsdw', type: 'string'},
+		{name: 'jsdwmc', type: 'string'}
 	]
 }

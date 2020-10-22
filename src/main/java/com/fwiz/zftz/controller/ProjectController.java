@@ -83,10 +83,11 @@ public class ProjectController {
 	@ResponseBody
 	public JResponse saveBankInfo(@RequestBody UpdateRows ur){
 		JResponse jr = new JResponse();
-		String userid="",strEns="",cid = "";
+		String userid="",strEns="",cid = "",proid="";
 		if(ur!=null){
 			strEns = ur.getRowsInfo();
 			cid = ur.getCid();
+			proid=ur.getProid();
 		}
 		if(StringUtils.isEmpty(strEns)){
 			jr.setRetCode("0");
@@ -109,7 +110,7 @@ public class ProjectController {
 				}
 			}
 		}
-		Map result = proService.saveBankInfo(userid,cid,strEns);
+		Map result = proService.saveBankInfo(userid,proid,cid,strEns);
 		String flag = (String)result.get("flag");
 		if("1".equals(flag)){
 			jr.setRetCode("0");

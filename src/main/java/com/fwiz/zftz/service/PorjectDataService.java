@@ -153,7 +153,7 @@ public class PorjectDataService {
 		return null;
 	}
 
-	public Map saveBankInfo(String userid, String cid, String strAccs) {
+	public Map saveBankInfo(String userid, String proid,String cid, String strAccs) {
 		Map info = new HashMap();
 		try{
 			JSONObject jAccs = JSON.parseObject(strAccs);
@@ -216,9 +216,9 @@ public class PorjectDataService {
 			if(jAccs!=null){
 				//记录日志，每保存一次只记录一次日志，粗粒度。具体删除、添加、修改内容，可从参数中解析
 				StringBuffer lsql = new StringBuffer("insert into zftz_logs");
-				lsql.append("(id,cid,optype,params,userid,ctime)");
-				lsql.append("select sq_zftz_log.nextval,?,'saveBankInfo',?,?,sysdate from dual");
-				jdbcTemplate.update(lsql.toString(), new Object[]{cid,strAccs,userid});
+				lsql.append("(id,proid,cid,optype,params,userid,ctime)");
+				lsql.append("select sq_zftz_log.nextval,?,?,'saveBankInfo',?,?,sysdate from dual");
+				jdbcTemplate.update(lsql.toString(), new Object[]{proid,cid,strAccs,userid});
 			}
 		}catch(Exception e){
 			info.put("flag", "9");

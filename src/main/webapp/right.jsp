@@ -129,7 +129,11 @@ ds.on("beforeload",function(store,options){
 	var st = options.params.start;
 	var lm = options.params.limit;
 	var optype = Ext.getCmp('optype').getValue();
-	var p = {optype: optype?optype:""};
+	var hasread = Ext.getCmp('hasread').getValue();
+	var p = {
+		optype: optype?optype:"",
+		hasread: hasread
+	}
 	var jparams = {
 		start: st,
 		limit: lm,
@@ -169,6 +173,30 @@ var grid = new Ext.grid.GridPanel({
 	    selectOnFocus : true,
 	    editable : false,
 	    store : optypeDs
+	},new Ext.Toolbar.Separator(),{
+		xtype: 'label',
+		text :'是否已读：'
+	},{
+		xtype:'combo',
+		name : 'readCb',
+		width : 100,
+		id: 'hasread',
+		displayField : 'mc',
+	    valueField : 'bm',
+	    typeAhead : true,
+	    mode : 'local',
+	    triggerAction : 'all',
+	    emptyText : '',
+	    selectOnFocus : true,
+	    editable : false,
+	    store : new Ext.data.SimpleStore({ 
+        	fields : ["bm", "mc"], 
+        	data : [ 
+        	['0', '未读'],
+        	['1', '已读'], 
+        	['', '全部']
+         	] 
+        })
 	},new Ext.Toolbar.Separator(),{
 		text: '删除',
 		iconCls: 'remove',

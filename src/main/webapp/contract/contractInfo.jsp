@@ -112,6 +112,7 @@ var grid = new Ext.grid.GridPanel({
 			}
 			cHtRd = rds[0];
 			cCid = '-1';
+			
 			conWin.show();
 		}
 	},{
@@ -726,7 +727,6 @@ function saveBankInfo(silent){
 				Ext.getBody().unmask();
 			   	var o = Ext.util.JSON.decode(response.responseText);
 			   	if(o&&o.retCode=="0"){
-			   		alert(o.retData.info);
 			   		cCid = o.retData.info;
 			   		cHtRd.set("id",o.retData.info);
 			   		cform.getForm().findField("id").setValue(o.retData.info);
@@ -887,71 +887,80 @@ conWin.on("show",function(){
 		Ext.getCmp("btn_submit").enable();
 		Ext.getCmp("btn_save").enable();
 	}
-	//加载合同信息
-	var kdata={proid :cHtRd.get("proid"), id: cCid};
-	Ext.Ajax.request({
-		url: '../xmgl/getSingleRecord',
-		method : 'post',
-		headers: {
-			"Content-Type": "application/json;charset=utf-8"
-		},
-		params : Ext.encode({
-			keyParams : Ext.encode(kdata),
-			dataID: 'contractInfo'
-		}),
-		success : function(response, options) {
-		   	var o = Ext.util.JSON.decode(response.responseText);
-		   	if(o&&o.retCode=="0"){
-		   		var info = o.retData;
-	   			cform.getForm().setValues(info);
-	   			cCid = info.id;
-	   			//获取lock状态，确定字段的只读/可编辑
-	   			var lockParams = {
-	   				qParams:{ module:'1',mkey: info.id}
-				};
-	   			Ext.Ajax.request({
-	   				url: '../xmgl/queryList',
-	   				method : 'post',
-	   				headers: {
-	   					"Content-Type": "application/json;charset=utf-8"
-	   				},
-	   				params : Ext.encode({
-	   					queryParams : lockParams,
-	   					dataID: 'lockStates'
-	   				}),
-	   				success : function(response, options) {
-	   				   	var o = Ext.util.JSON.decode(response.responseText);
-	   				   	if(o&&o.retCode=="0"){
-	   				   		var rows= o.retData.rows;
-	   				   		if(rows){
-	   				   			for(var i=0;i<rows.length;i++){
-	   				   				var o = rows[i];
-	   				   				if(o.fld){
-	   				   					//锁定信息存在本地，以便操作时临时判断锁定状态
-	   				   					LockInfo[o.fld]=o.islock;
-	   				   					if(cform.getForm().findField(o.fld)){
-	   				   						if(o.islock==1){
-	   				   							cform.getForm().findField(o.fld).disable();
-	   				   						}else{
-	   				   							cform.getForm().findField(o.fld).enable();
-	   				   						}
-	   				   					}
-	   				   				}
-	   				   			}
-	   				   		}
-	   				   	}
-	   				},
-	   				failure : function() {
-	   			  	}
-	   			});
-		   	}
-		},
-		failure : function() {
-	  	}
-	});
-	bds.load({});
-	fds.load({});
-	pds.load({});
+	if(cCid='-1'){
+		cform.getForm().findField("jsdwmc").setValue(cHtRd.get("jsdwmc"));
+		cform.getForm().findField("id").setValue(-1);
+		bds.load({});
+		fds.load({});
+		pds.load({});
+	}else{
+		//加载合同信息
+		var kdata={proid :cHtRd.get("proid"), id: cCid};
+		Ext.Ajax.request({
+			url: '../xmgl/getSingleRecord',
+			method : 'post',
+			headers: {
+				"Content-Type": "application/json;charset=utf-8"
+			},
+			params : Ext.encode({
+				keyParams : Ext.encode(kdata),
+				dataID: 'contractInfo'
+			}),
+			success : function(response, options) {
+			   	var o = Ext.util.JSON.decode(response.responseText);
+			   	if(o&&o.retCode=="0"){
+			   		var info = o.retData;
+		   			cform.getForm().setValues(info);
+		   			cCid = info.id;
+		   			//获取lock状态，确定字段的只读/可编辑
+		   			var lockParams = {
+		   				qParams:{ module:'1',mkey: info.id}
+					};
+		   			Ext.Ajax.request({
+		   				url: '../xmgl/queryList',
+		   				method : 'post',
+		   				headers: {
+		   					"Content-Type": "application/json;charset=utf-8"
+		   				},
+		   				params : Ext.encode({
+		   					queryParams : lockParams,
+		   					dataID: 'lockStates'
+		   				}),
+		   				success : function(response, options) {
+		   				   	var o = Ext.util.JSON.decode(response.responseText);
+		   				   	if(o&&o.retCode=="0"){
+		   				   		var rows= o.retData.rows;
+		   				   		if(rows){
+		   				   			for(var i=0;i<rows.length;i++){
+		   				   				var o = rows[i];
+		   				   				if(o.fld){
+		   				   					//锁定信息存在本地，以便操作时临时判断锁定状态
+		   				   					LockInfo[o.fld]=o.islock;
+		   				   					if(cform.getForm().findField(o.fld)){
+		   				   						if(o.islock==1){
+		   				   							cform.getForm().findField(o.fld).disable();
+		   				   						}else{
+		   				   							cform.getForm().findField(o.fld).enable();
+		   				   						}
+		   				   					}
+		   				   				}
+		   				   			}
+		   				   		}
+		   				   	}
+		   				},
+		   				failure : function() {
+		   			  	}
+		   			});
+			   	}
+			},
+			failure : function() {
+		  	}
+		});
+		bds.load({});
+		fds.load({});
+		pds.load({});
+	}
+	
 });
 function saveContract(changedFlds,issubmit){
 	if(Ext.encode(changedFlds)=="{}"){
@@ -1043,6 +1052,8 @@ var uploadForm = new Ext.FormPanel({
 					//如果是合同附件，上传完成后，更新金额、合同总额等数据
 					if(cFld=='contractappendix'){
 						var uInfo = {
+							proid : cHtRd.get("proid"),
+							pname : cHtRd.get("pname"),
 							cid: cCid,
 							fid: fid, 
 							je: uploadForm.getForm().findField("appendixJe").getValue()
@@ -1227,7 +1238,10 @@ function fileUpload (btn,e){
 		uploadForm.getForm().findField("appendixJe").enable();
 	}
 	if(!cCid|| Number(cCid)<0){
-		var cInfo={ proid : cHtRd.get("proid")};
+		var cInfo={ 
+			proid : cHtRd.get("proid"),
+			pname : cHtRd.get("pname")
+		};
 		Ext.Ajax.request({
 			url: '../xmgl/save',
 			method : 'post',
