@@ -887,7 +887,7 @@ conWin.on("show",function(){
 		Ext.getCmp("btn_submit").enable();
 		Ext.getCmp("btn_save").enable();
 	}
-	if(cCid='-1'){
+	if(cCid=='-1'){
 		cform.getForm().findField("jsdwmc").setValue(cHtRd.get("jsdwmc"));
 		cform.getForm().findField("id").setValue(-1);
 		bds.load({});

@@ -655,7 +655,7 @@ jds.on("beforeload",function(store,options){
 	var lm = options.params.limit;
 	var rds = grid.getSelectionModel().getSelections();
 	var proid = rds[0].get("id");
-	var p = {proid: proid};
+	var p = {proid: proid,fld: 'jqhbcl'};
 	var jparams = {
 		start: st,
 		limit: lm,
@@ -663,7 +663,7 @@ jds.on("beforeload",function(store,options){
 	}
 	jds.baseParams={
 		jsonData: Ext.encode({
-			dataID : 'jqhbcl',
+			dataID : 'proAttachFiles',
 			queryParams : jparams
 		})
 	};

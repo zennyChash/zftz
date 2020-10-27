@@ -107,19 +107,20 @@ public class AuthController {
 	public List getAuthModules(@RequestParam("pid") String pid,@RequestParam(required=false)String userid){
 		List modules = null;
 		String cuser ="";
-		if("on".equals(cg.getString("testMode"))){
-			if(StringUtils.isEmpty(userid)){
-				try{
-					cuser = userid;
-				}catch(Exception e){
-				}
-			}
-		}
 		RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
 		HttpServletRequest request = null;
 		if (requestAttributes != null) {
 			request = ((ServletRequestAttributes) requestAttributes).getRequest();
 			cuser=(String)request.getSession().getAttribute("userid");
+		}
+		//测试模式下，会话中没有，则从请求参数中取，这是为了方便单个请求接口测试。
+		if("on".equals(cg.getString("testMode"))){
+			if(StringUtils.isEmpty(cuser)){
+				try{
+					cuser = userid;
+				}catch(Exception e){
+				}
+			}
 		}
 		if("admin".equals(userid)){
 			modules = authService.getAllModules(pid);
@@ -269,6 +270,7 @@ public class AuthController {
 			log.info("用户"+decryptedUserid+"于"+df.format(new Date())+"登录系统！");
 			jr.setRetCode("0");
 			jr.setRetMsg("");
+			System.out.println("解密后的用户："+decryptedUserid);
 			Map um = authService.getUserInfo(decryptedUserid);//用户的中文名，类型
 			jr.setRetData(um);
 			RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();

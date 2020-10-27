@@ -222,9 +222,9 @@ public class AuthService {
 
 	public Map getUserInfo(String userid) {
 		Map mu = new HashMap();
-		StringBuffer sql = new StringBuffer("select u.user_name,to_char(u.id)id,u.full_name,u.telephone,to_char(e.user_type)user_type ");
-		sql.append(" from CZEPT_USER u, CZEPT_USER_ENTERPRISE e where u.id=e.user_id(+) and (u.user_name=? or telephone=?)");
-		List lst = jdbcTemplate.queryForList(sql.toString(), new Object[]{userid,userid});
+		StringBuffer sql = new StringBuffer("select u.user_name,to_char(u.id)id,u.full_name,u.telephone,to_char(e.user_type)user_type,e.code ");
+		sql.append(" from CZEPT_USER u, CZEPT_USER_ENTERPRISE e where u.id=e.user_id(+) and (u.user_name=? or telephone=? or e.code=?)");
+		List lst = jdbcTemplate.queryForList(sql.toString(), new Object[]{userid,userid,userid});
 		if(lst!=null){
 			mu = (Map)lst.get(0); 
 		}
