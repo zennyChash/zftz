@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.sql.CallableStatement;
@@ -17,8 +18,10 @@ import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -515,5 +518,46 @@ public class CommonDataService {
 			log.error(e.toString());
 		}
 		return infos;
+	}
+
+	public List getBasePanelByPhase(String module)throws Exception {
+		List phases = new ArrayList();
+		//查询出有几个阶段设置
+		StringBuffer sql=new StringBuffer("select phasebm,phasename from zftz_phase where module=?");
+    	sql.append(" order by showorder");
+    	List rsts = jdbcTemplate.queryForList(sql.toString(),new Object[]{module});
+    	if(rsts!=null){
+			for(int i=0;i<rsts.size();i++){
+				Map r = (Map)rsts.get(i);
+				Map phase = new HashMap();
+				String phasebm =(String)r.get("phasebm");
+				String phasename =(String)r.get("phasename");
+				//根据阶段bm获取字段详情
+				StringBuffer dsql = new StringBuffer("select fld,fldname name,nvl(isattach,'0') isattach,nvl(canlock,'0') canlock,");
+				dsql.append("nvl(editable,'0') editable,nvl(fldtype,'0') fldtype,option_tb,nvl(hasdetail,'0') hasdetail");
+				dsql.append(" from zftz_dictionary where phasebm=?");
+				List flds = jdbcTemplate.queryForList(dsql.toString(),new Object[]{phasebm});
+				List lowerflds = new ArrayList();
+				if(flds!=null&&flds.size()>0){
+					//属性都转化成小写
+					for(int j=0;j<flds.size();j++){
+						Map f = (Map)flds.get(j);
+						Map fv = new HashMap();
+						Iterator it = f.entrySet().iterator();
+			            while(it.hasNext()) {
+			                Entry<String, Object> entry = (Entry)it.next();
+			                fv.put(((String)entry.getKey()).toLowerCase(), f.get(entry.getKey()));
+			            }
+			            lowerflds.add(fv);
+					}
+					
+				}
+				phase.put("phasebm", phasebm);
+				phase.put("phasename", phasename);
+				phase.put("fields", lowerflds);
+				phases.add(phase);
+			}
+    	}
+		return phases;
 	}
 }

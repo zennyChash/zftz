@@ -364,7 +364,7 @@ var cform = new Ext.FormPanel({
 						name : 'change',
 		                xtype: 'button',
 		                text: '附件',
-		                id: 'btn_contractAppendix',
+		                id: 'btn_contractappendix',
 		                handler: fileUpload
 					}]
 				}]

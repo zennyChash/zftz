@@ -510,4 +510,26 @@ public class CommonController {
             e.printStackTrace();
         }
 	}
+	/**
+	 * 获取页面布局
+	 * @param
+	 * @return
+	 */
+	@RequestMapping("/getBasePanelByPhase")
+	@ResponseBody
+	public JResponse getBasePanelByPhase(@RequestParam("module") String module){
+		JResponse jr = new JResponse();
+		List result = null;
+		try{
+			result = dataService.getBasePanelByPhase(module);
+		}catch(Exception e){
+			jr.setRetCode("9");
+			jr.setRetMsg(e.toString());
+			jr.setRetData(null);
+		}
+		jr.setRetCode("0");
+		jr.setRetMsg("");
+		jr.setRetData(result);
+		return jr;
+	}
 } 

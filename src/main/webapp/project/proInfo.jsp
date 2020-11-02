@@ -1985,7 +1985,8 @@ function savePro(isSubmit){
 		if(isSubmit==0){
 			return;
 		}else{
-			submitPro();
+			//submitPro();
+			startEWorkflow();
 		}
 	}else{
 		saveRltEns(true);
@@ -2012,7 +2013,8 @@ function savePro(isSubmit){
 			   	var o = Ext.util.JSON.decode(response.responseText);
 			   	if(o&&o.retCode=="0"){
 			   		if(isSubmit==1){
-			   			submitPro();
+			   			//submitPro();
+			   			startEWorkflow();
 			   		}else{
 			   			ds.load({params:{start:0,limit:PAGE_SIZE}});
 			   			Ext.Msg.alert('信息',o&&o.retData.info?o.retData.info:"已保存！");
@@ -2025,6 +2027,76 @@ function savePro(isSubmit){
 		  	}
 		});	
 	}
+}
+function startEWorkflow(){
+	//1、生成并保存流水号
+	var kdata={
+		module:'0',
+		sxlx:'ZFTZ_XMJCSH',
+		mkey: cProRd.get("id")
+	};
+	Ext.Ajax.request({
+		url:'../xmgl/getSingleRecord',
+		method : 'post',
+		headers: {
+			"Content-Type": "application/json;charset=utf-8"
+		},
+		params : Ext.encode({
+			keyParams : Ext.encode(kdata),
+			dataID: 'EWorkflowStartInfo'
+		}),
+		success : function(response, options) {
+			Ext.getBody().unmask();
+			var o = Ext.util.JSON.decode(response.responseText);
+			if(o&&o.retCode=="0"){
+		   		var info = o.retData;
+				var lsh = info.lsh;
+				var ecode = info.entercode;
+				//2、从E平台获取第一环节审批人
+				Ext.Ajax.request({
+					url:'/czept/api/bpm_dbsx/ZFTZ_XMJCSH/first_step_performers?&xlhSpsx=301',
+					method : 'get',
+					success : function(response, options) {
+						Ext.getBody().unmask();
+						var eo = Ext.util.JSON.decode(response.responseText);
+						if(eo&&eo.success){
+							var sprInfo = eo.result;//第一环节审批人
+							var p ={
+								bpmActivities: sprInfo,
+								uuid: ecode,
+							    xlhSpsx: lsh,
+							    spyj: "项目信息提交审核！",
+							    spyjsm: "ads"
+							};
+							Ext.Ajax.request({
+								url: '/czept/api/bpm_dbsx/ZFTZ_XMJCSH/manual',
+								method : 'post',
+								headers: {
+									"Content-Type": "application/json;charset=utf-8"
+								},
+								params : Ext.encode(p),
+								success : function(response, options) {
+									Ext.getBody().unmask();
+								   	var o = Ext.util.JSON.decode(response.responseText);
+								   	if(o&&o.success){
+								   		Ext.Msg.alert('信息',"项目基础信息已提交审核！");
+								   		ds.load({params:{start:0,limit:PAGE_SIZE}});
+								   		proWin.hide();
+								   	}
+								},
+								failure : function() {
+							  	}
+							});
+						}
+					},
+					failure : function() {
+				  	}
+				});
+			}
+		},
+		failure : function() {
+	  	}
+	});
 }
 function submitPro(){
 	var submitParams = {
