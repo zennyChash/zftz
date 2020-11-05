@@ -101,6 +101,8 @@
 			<groupId>${jdbc.groupId}</groupId>
 			<artifactId>${jdbc.artifactId}</artifactId>
 			<version>${jdbc.version}</version>
+			<scope>system</scope>
+            <systemPath>${project.basedir}/lib/ojdbc5.jar</systemPath>
 		</dependency>
 		<!-- EHCache -->
 		<dependency>
@@ -209,6 +211,8 @@
 			<groupId>org.mozilla</groupId>
 			<artifactId>rhino</artifactId>
 			<version>${rhino.version}</version>
+			<scope>system</scope>
+            <systemPath>${project.basedir}/lib/rhino.jar</systemPath>
 		</dependency>
 		<dependency>
 		    <groupId>commons-net</groupId>
@@ -219,6 +223,8 @@
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>${json.version}</version>
+			<scope>system</scope>
+            <systemPath>${project.basedir}/lib/json.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>

@@ -534,7 +534,7 @@ public class CommonDataService {
 				String phasename =(String)r.get("phasename");
 				//根据阶段bm获取字段详情
 				StringBuffer dsql = new StringBuffer("select fld,fldname name,nvl(isattach,'0') isattach,nvl(canlock,'0') canlock,");
-				dsql.append("nvl(editable,'0') editable,nvl(fldtype,'0') fldtype,option_tb,nvl(hasdetail,'0') hasdetail");
+				dsql.append("nvl(editable,'0') editable,nvl(fldtype,'0') fldtype,option_tb,nvl(hasdetail,'0') hasdetail,nvl(ishidden,'0') ishidden");
 				dsql.append(" from zftz_dictionary where phasebm=?");
 				List flds = jdbcTemplate.queryForList(dsql.toString(),new Object[]{phasebm});
 				List lowerflds = new ArrayList();

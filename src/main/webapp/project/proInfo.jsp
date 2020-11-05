@@ -2054,7 +2054,7 @@ function startEWorkflow(){
 				var ecode = info.entercode;
 				//2、从E平台获取第一环节审批人
 				Ext.Ajax.request({
-					url:'/czept/api/bpm_dbsx/ZFTZ_XMJCSH/first_step_performers?&xlhSpsx=301',
+					url:'/czept/api/bpm_dbsx/ZFTZ_XMJCSH/first_step_performers?&xlhSpsx='+lsh,
 					method : 'get',
 					success : function(response, options) {
 						Ext.getBody().unmask();
