@@ -560,4 +560,96 @@ public class CommonDataService {
     	}
 		return phases;
 	}
+	//2020-11-06对E平台的请求进行处理，统一后缀_ept去掉，再根据流水号（lsh）转换业务id，重置请求参数
+	public String processParamsForEpt(String qtype,JSONObject jqps) {
+		String lsh = jqps.getString("lsh");
+		StringBuffer sql = new StringBuffer("select module,mkey from zftz_eworkflow_instance where lsh=?");
+		Map rst = jdbcTemplate.queryForMap(sql.toString(),new Object[]{lsh});
+		if(rst!=null){
+			String module = (String)rst.get("module");
+			BigDecimal dmkey = (BigDecimal)rst.get("mkey");
+			long mkey = dmkey.longValue();
+			if("queryList".equals(qtype)){
+				if("1".equals(module)){
+					jqps.put("cid", mkey);
+				}else{
+					jqps.put("proid", mkey);
+				}
+			}else if("getSingleRecord".equals(qtype)){
+				jqps.put("id", mkey);
+			}else if("queryListPaging".equals(qtype)){
+				if("1".equals(module)){
+					jqps.put("cid", mkey);
+				}else{
+					jqps.put("proid", mkey);
+				}
+			}
+		}
+		return jqps.toJSONString();
+	}
+	//某事件触发的检查规则列表
+	public List getCheckTasks(String eventBm) {
+		List tasks= null;
+		StringBuffer sql = new StringBuffer("select m.ebm,m.rid,r.rname,r.rprocedure,r.rtype,r.vlevels ");
+		sql.append(" from zftz_rules_map m,zftz_rules r where r.id=m.rid and m.ebm=? order by m.exeorder");
+		tasks = jdbcTemplate.queryForList(sql.toString(), eventBm);
+		return tasks;
+	}
+	//执行单个规则检查
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public JSONObject executeCheckRule(String proName, String userid, String eventBm, String batchid,String rid, String params) {
+		final JSONObject infos = new JSONObject();
+		StringBuffer sql = new StringBuffer("{call ");
+		sql.append(proName).append("(?,?,?,?,?,?,?)}");
+		String flag = "1";
+		final String[] results = new String[2];
+		try{
+			final String fUserid = userid;
+			final String feventBm = eventBm;
+			final String fbatchid = batchid;
+			final String frid = rid;
+			final String fparams = params;
+			flag = (String)jdbcTemplate.execute(sql.toString(),new CallableStatementCallback() {
+				public Object doInCallableStatement(CallableStatement cs)throws SQLException, DataAccessException {
+					cs.setString(1,fUserid);
+					cs.setString(2,feventBm);
+					cs.setString(3,fbatchid);
+					cs.setString(4,frid);
+					cs.setString(5,fparams);
+	                cs.registerOutParameter(6,Types.VARCHAR);  
+	                cs.registerOutParameter(7,Types.VARCHAR);  
+	                cs.execute();  
+	                String tmpflag = cs.getString(6);
+	                String tmpInfo = cs.getString(7);
+	                if(!"1".equals(tmpflag)){
+	                	log.error(tmpInfo);
+	                }
+	                results[0] = tmpflag;
+	                results[1] = tmpInfo;
+	                infos.put("flag", tmpflag);
+	                infos.put("info", tmpInfo);
+	                return tmpflag;  
+				} 
+			});
+		}catch(Throwable e){
+			results[0] = "9";
+			results[1] = e.toString();
+			log.error(e.toString());
+		}
+		return infos;
+	}
+	//按指定的执行批次号获取执行结果（任务完成状态+结果列表。状态可用于判断是否继续轮询）
+	public Map pollCheckResults(String userid,String batchid) {
+		Map info = new HashMap();
+		//获取执行结果
+		info = getList(userid,"","","ruleCheckResults", "batchid:"+batchid);
+		//检查任务执行状态，0：未完，1：完成
+		int status = cg.getTaskStatus(batchid);
+		info.put("status", status);
+		//如果已经完成，将全局map中，当前batchid记录清除
+		if(status==1){
+			cg.clearTaskLogs(batchid);
+		}
+		return info;
+	}
 }

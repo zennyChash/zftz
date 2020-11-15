@@ -473,7 +473,7 @@ fds.on("beforeload",function(store,options){
 	}
 	fds.baseParams={
 		jsonData: Ext.encode({
-			dataID : 'contractappendix',
+			dataID : 'contractAppendices',
 			queryParams : jparams
 		})
 	};
@@ -819,7 +819,7 @@ var contractTab = new Ext.TabPanel({
 	items:[
 	{
 		layout:'fit',
-        title: '合同附件',
+        title: '补充合同',
         closable: false,
         items: fileGrid 
     },{

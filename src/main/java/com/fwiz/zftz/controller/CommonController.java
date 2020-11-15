@@ -30,7 +30,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fwiz.zftz.service.CommonDataService;
+import com.fwiz.zftz.service.ExecuteCheckRunnable;
 import com.fwiz.zftz.utils.JResponse;
+import com.fwiz.zftz.utils.bean.CheckRuleJson;
 import com.fwiz.zftz.utils.bean.DeleteDataJson;
 import com.fwiz.zftz.utils.bean.GetDataJson;
 import com.fwiz.zftz.utils.bean.KeyValuePair;
@@ -77,6 +79,12 @@ public class CommonController {
 		sort = jparams.containsKey("sort")?jparams.getString("sort"):"";
 		dir =  jparams.containsKey("dir")?jparams.getString("dir"):"";
 		String qps = jparams.containsKey("qParams")? jparams.getString("qParams"):"";
+		//2020-11-06对E平台的请求进行处理，统一后缀_ept去掉，再根据流水号（lsh）转换业务id，重置请求参数
+		if(!StringUtils.isEmpty(dtID)&&"_ept".equalsIgnoreCase(dtID.substring(dtID.length()-4))){
+			dtID=dtID.substring(0,dtID.length()-4);
+			JSONObject jqps = JSON.parseObject(qps);
+			qps = dataService.processParamsForEpt("queryListPaging",jqps);
+		}
 		String tparams = StringUtils.substringBetween(qps, "{", "}");
 		tparams = StringUtils.replace(tparams, "\"", "");
 		JSONObject jucfg = dataService.getListPaging(userid,start,limit,sort,dir,dtID,tparams);
@@ -121,6 +129,12 @@ public class CommonController {
 		sort = jparams.containsKey("sort")?jparams.getString("sort"):"";
 		dir =  jparams.containsKey("dir")?jparams.getString("dir"):"";
 		String qps = jparams.containsKey("qParams")? jparams.getString("qParams"):"";
+		//2020-11-06对E平台的请求进行处理，统一后缀_ept去掉，再根据流水号（lsh）转换业务id，重置请求参数
+		if(!StringUtils.isEmpty(dtID)&&"_ept".equalsIgnoreCase(dtID.substring(dtID.length()-4))){
+			dtID=dtID.substring(0,dtID.length()-4);
+			JSONObject jqps = JSON.parseObject(qps);
+			qps = dataService.processParamsForEpt("queryList",jqps);
+		}
 		String tparams = StringUtils.substringBetween(qps, "{", "}");
 		tparams = StringUtils.replace(tparams, "\"", "");
 		JSONObject jucfg = dataService.getList(userid,sort,dir,dtID,tparams);
@@ -135,11 +149,10 @@ public class CommonController {
 		}
 		return jr;
 	}
-	@RequestMapping(value="/queryCheckedTree",method = RequestMethod.POST)
+	@RequestMapping(value="/getTreeBms",method = RequestMethod.POST)
 	@ResponseBody
-	public JResponse queryCheckedTree(@RequestBody GetDataJson gd){
+	public JResponse getTreeBms(@RequestBody GetDataJson gd){
 		JResponse jr = new JResponse();
-		String dtID=gd.getDataID();
 		JSONObject jparams = gd.parseJQueryParams();
 		String sort="",dir="",qparams = "",userid="";
 		RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
@@ -161,8 +174,8 @@ public class CommonController {
 		jparams.put("loadAll", sLoadAll);
 		String tparams = StringUtils.substringBetween(jparams.toJSONString(), "{", "}");
 		tparams = StringUtils.replace(tparams, "\"", "");
-		
-		JSONObject jucfg = dataService.getList(userid,sort,dir,dtID,tparams);
+		String proName = "treeBms";
+		JSONObject jucfg = dataService.getList(userid,"","",proName,tparams);
 		if(jucfg!=null&&jucfg.containsKey("error")){
 			jr.setRetCode("9");
 			jr.setRetMsg(jucfg.getString("error"));
@@ -275,7 +288,8 @@ public class CommonController {
 		String flag = (String)result.get("flag");
 		if("1".equals(flag)){
 			//记录日志
-			dataService.addLog(opType,proid,pname,cid,htbh,params.toJSONString(),userid);
+			//dataService.addLog(opType,proid,pname,cid,htbh,params.toJSONString(),userid);
+			
 			jr.setRetCode("0");
 			jr.setRetMsg("");
 			JSONObject oj = new JSONObject();
@@ -343,7 +357,7 @@ public class CommonController {
 	@ResponseBody
 	public JResponse getSingleRecord(@RequestBody QuerySingleRdJson qb){
 		JResponse jr = new JResponse();
-		String dtId = qb.getDataID();
+		String dtID = qb.getDataID();
 		JSONObject params = qb.parseJKeyParams();
 		String userid="";
 		RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
@@ -361,9 +375,15 @@ public class CommonController {
 			}
 		}
 		String sps = params.toJSONString();
+		//2020-11-06对E平台的请求进行处理，统一后缀_ept去掉，再根据流水号（lsh）转换业务id，重置请求参数
+		if(!StringUtils.isEmpty(dtID)&&"_ept".equalsIgnoreCase(dtID.substring(dtID.length()-4))){
+			dtID=dtID.substring(0,dtID.length()-4);
+			JSONObject jsps = JSON.parseObject(sps);
+			sps = dataService.processParamsForEpt("getSingleRecord",jsps);
+		}
 		String tparams = StringUtils.substringBetween(sps, "{", "}");
 		tparams = StringUtils.replace(tparams, "\"", "");
-		Map result = dataService.getSingleRecord(userid,dtId,tparams);
+		Map result = dataService.getSingleRecord(userid,dtID,tparams);
 		if(result!=null&&result.containsKey("error")){
 			jr.setRetCode("9");
 			jr.setRetMsg((String)result.get("error"));
@@ -532,4 +552,85 @@ public class CommonController {
 		jr.setRetData(result);
 		return jr;
 	}
+	@RequestMapping(value="/rulesCheck",method = RequestMethod.POST)
+	@ResponseBody
+	public JResponse rulesCheck(@RequestBody CheckRuleJson cr){
+		JResponse jr = new JResponse();
+		String eventBm = cr.getEvent();
+		JSONObject params = cr.parseJCheckRuleParams();
+		String userid="";
+		RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
+		if (requestAttributes != null) {
+			HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+			userid = (String)request.getSession().getAttribute("userid");
+		}
+		//测试模式下，会话中没有，则从请求参数中取，这是为了方便单个请求接口测试。
+		if("on".equals(cg.getString("testMode"))){
+			if(StringUtils.isEmpty(userid)){
+				try{
+					userid = params.getString("operator");
+				}catch(Exception e){
+				}
+			}
+		}
+		try{
+			//按当前毫秒数生成执行批次号
+			String batchid = String.valueOf(System.currentTimeMillis());
+	    	cg.setTaskStatus(batchid, 0);
+			//将任务交给另一个线程去做
+			ExecuteCheckRunnable exeCheck = new ExecuteCheckRunnable(userid,eventBm,batchid,params);
+			new Thread(exeCheck).start();
+			//请求立刻返回
+			jr.setRetCode("0");
+			jr.setRetMsg("");
+			JSONObject jdata = new JSONObject();
+			jdata.put("batchid", batchid);
+			jr.setRetData(jdata); 
+		}catch(Exception e){
+			jr.setRetCode("9");
+			jr.setRetMsg(e.toString());
+			jr.setRetData(null);
+		}
+		return jr;
+	}
+	
+	@RequestMapping(value="/pollCheckResults")
+	@ResponseBody
+	public JResponse pollCheckResults(@RequestParam Map<String, String> params){
+		JResponse jr = new JResponse();
+		if(params!=null){
+			String batchid = params.get("batchid");
+			String userid ="";
+			RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
+			if (requestAttributes != null) {
+				HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+				userid = (String)request.getSession().getAttribute("userid");
+			}
+			//测试模式下，会话中没有，则从请求参数中取，这是为了方便单个请求接口测试。
+			if("on".equals(cg.getString("testMode"))){
+				if(StringUtils.isEmpty(userid)){
+					try{
+						userid =  params.get("userid");
+					}catch(Exception e){
+					}
+				}
+			}
+			if(StringUtils.isEmpty(batchid)){
+				jr.setRetCode("9");
+				jr.setRetMsg("未指定要查看的执行批次号！");
+				jr.setRetData("");
+			}else{
+				Map crInfos = dataService.pollCheckResults(userid,batchid);
+				jr.setRetCode("0");
+				jr.setRetMsg("");
+				jr.setRetData(crInfos);
+			}
+		}else{
+			jr.setRetCode("9");
+			jr.setRetMsg("缺少参数，无法执行！");
+			jr.setRetData("");
+		}
+		return jr;
+	}
+	
 } 

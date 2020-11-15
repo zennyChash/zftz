@@ -34,6 +34,9 @@ public class Configuration {
 	private Map mapProSystemSets = null;
 	private Map formFieldsMap = null;
 	private Map gridsMap = null;
+	//执行检查规则任务时，全局的任务执行状态，批次号——>状态（0：未完，1：执行完）
+	private Map taskStatus = new HashMap();
+	
 	private Configuration(){
 	    try{
 	    	resources = ResourceBundle.getBundle("Resource", Locale.getDefault());
@@ -288,4 +291,24 @@ public class Configuration {
     	reloadSystemSets();
     	reloadSystemSets();
     }
+    //检查规则的任务开始时，将批次号及其状态放入全局map
+	public void setTaskStatus(String tid,int status){
+  		taskStatus.put(tid, status);
+  	}
+	//按批次号获取其状态
+	public int getTaskStatus(String tid){
+  		int flag = 0;
+  		if(taskStatus.containsKey(tid)){
+  			flag = ((Integer)taskStatus.get(tid)).intValue();
+  		}else{
+  			flag = 9;
+  		}
+  		return flag;
+  	}
+	//任务完成后，删除批次号及其状态记录
+	public void clearTaskLogs(String batchid) {
+  		if(taskStatus.containsKey(batchid)){
+  			taskStatus.remove(batchid);
+  		}
+	}
 }

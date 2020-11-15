@@ -1986,7 +1986,9 @@ function savePro(isSubmit){
 			return;
 		}else{
 			//submitPro();
-			startEWorkflow();
+			//先执规则检查，发起后，获得返回的batchid，轮询，执行完毕显示报告，再次确定提交
+			
+			startEWorkflow(12998031);
 		}
 	}else{
 		saveRltEns(true);
@@ -2014,7 +2016,7 @@ function savePro(isSubmit){
 			   	if(o&&o.retCode=="0"){
 			   		if(isSubmit==1){
 			   			//submitPro();
-			   			startEWorkflow();
+			   			startEWorkflow(12998003);
 			   		}else{
 			   			ds.load({params:{start:0,limit:PAGE_SIZE}});
 			   			Ext.Msg.alert('信息',o&&o.retData.info?o.retData.info:"已保存！");
@@ -2028,12 +2030,13 @@ function savePro(isSubmit){
 		});	
 	}
 }
-function startEWorkflow(){
+function startEWorkflow(batchid){
 	//1、生成并保存流水号
 	var kdata={
 		module:'0',
 		sxlx:'ZFTZ_XMJCSH',
-		mkey: cProRd.get("id")
+		mkey: cProRd.get("id"),
+		rbatchid: batchid
 	};
 	Ext.Ajax.request({
 		url:'../xmgl/getSingleRecord',
@@ -2052,6 +2055,7 @@ function startEWorkflow(){
 		   		var info = o.retData;
 				var lsh = info.lsh;
 				var ecode = info.entercode;
+				var userid = info.userid;
 				//2、从E平台获取第一环节审批人
 				Ext.Ajax.request({
 					url:'/czept/api/bpm_dbsx/ZFTZ_XMJCSH/first_step_performers?&xlhSpsx='+lsh,
@@ -2066,7 +2070,8 @@ function startEWorkflow(){
 								uuid: ecode,
 							    xlhSpsx: lsh,
 							    spyj: "项目信息提交审核！",
-							    spyjsm: "ads"
+							    spyjsm: "ads",
+							    userId:userid
 							};
 							Ext.Ajax.request({
 								url: '/czept/api/bpm_dbsx/ZFTZ_XMJCSH/manual',

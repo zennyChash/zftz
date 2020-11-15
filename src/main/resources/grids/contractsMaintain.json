@@ -2,12 +2,6 @@
 	id:'contractsMaintain',
 	columns:[
 	{
-		header: '项目名称',
-		dataIndex: 'pname',
-		width: 300,
-		align: 'left',
-		renderer: renderFoo
-	},{
 	    header: '合同名称',
 	    dataIndex: 'htmc',
 	    width: 200,
