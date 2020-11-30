@@ -90,9 +90,9 @@ public class PorjectDataService {
 			if(jens!=null){
 				//记录日志，每保存一次只记录一次日志，粗粒度。具体删除、添加、修改内容，可从参数中解析
 				StringBuffer lsql = new StringBuffer("insert into zftz_logs");
-				lsql.append("(id,proid,optype,params,userid,ctime)");
-				lsql.append("select sq_zftz_log.nextval,?,'saveProRltEns',?,?,sysdate from dual");
-				jdbcTemplate.update(lsql.toString(), new Object[]{proid,strEns,userid});
+				lsql.append("(id,optype,params,userid,ctime)");
+				lsql.append("select sq_zftz_log.nextval,'saveProRltEns',?,?,sysdate from dual");
+				jdbcTemplate.update(lsql.toString(), new Object[]{strEns,userid});
 			}
 		}catch(Exception e){
 			info.put("flag", "9");
@@ -131,12 +131,11 @@ public class PorjectDataService {
 					String remark = item.getString("remark");
 					jdbcTemplate.update(sql.toString(), new Object[]{proid,iid,iname,je,remark});
 				}
-				
 				//记录日志，每保存一次只记录一次日志，粗粒度。具体删除、添加、修改内容，可从参数中解析
 				StringBuffer lsql = new StringBuffer("insert into zftz_logs");
-				lsql.append("(id,proid,optype,params,userid,ctime)");
-				lsql.append("select sq_zftz_log.nextval,?,'saveProGaisuan',?,?,sysdate from dual");
-				jdbcTemplate.update(lsql.toString(), new Object[]{proid,strRows,userid});
+				lsql.append("(id,optype,params,userid,ctime)");
+				lsql.append("select sq_zftz_log.nextval,'saveProGaisuan',?,?,sysdate from dual");
+				jdbcTemplate.update(lsql.toString(), new Object[]{strRows,userid});
 			}
 		}catch(Exception e){
 			info.put("flag", "9");
@@ -216,9 +215,9 @@ public class PorjectDataService {
 			if(jAccs!=null){
 				//记录日志，每保存一次只记录一次日志，粗粒度。具体删除、添加、修改内容，可从参数中解析
 				StringBuffer lsql = new StringBuffer("insert into zftz_logs");
-				lsql.append("(id,proid,cid,optype,params,userid,ctime)");
-				lsql.append("select sq_zftz_log.nextval,?,?,'saveBankInfo',?,?,sysdate from dual");
-				jdbcTemplate.update(lsql.toString(), new Object[]{proid,cid,strAccs,userid});
+				lsql.append("(id,optype,params,userid,ctime)");
+				lsql.append("select sq_zftz_log.nextval,'saveBankInfo',?,?,sysdate from dual");
+				jdbcTemplate.update(lsql.toString(), new Object[]{strAccs,userid});
 			}
 		}catch(Exception e){
 			info.put("flag", "9");

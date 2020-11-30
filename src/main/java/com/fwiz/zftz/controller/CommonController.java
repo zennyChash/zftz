@@ -266,15 +266,6 @@ public class CommonController {
 		Map result = dataService.saveData(userid,dtId,tparams);
 		
 		//记录日志
-		String proid ="",pname="",cid="",htbh="";
-		try{
-			proid = params.getString("proid");
-			pname=params.getString("pname");
-			cid=params.getString("cid");
-			htbh=params.getString("htbh");
-		}catch(Exception e){
-			log.info(e.toString());
-		}
 		String opType = "";
 		try{
 			opType = params.getString("opType");
@@ -285,11 +276,11 @@ public class CommonController {
 		if(StringUtils.isEmpty(opType)){
 			opType = "save" + dtId.substring(0, 1).toUpperCase()+ dtId.substring(1, dtId.length());
 		}
+		
 		String flag = (String)result.get("flag");
 		if("1".equals(flag)){
 			//记录日志
-			//dataService.addLog(opType,proid,pname,cid,htbh,params.toJSONString(),userid);
-			
+			dataService.addLog(opType,params.toJSONString(),userid);
 			jr.setRetCode("0");
 			jr.setRetMsg("");
 			JSONObject oj = new JSONObject();
@@ -333,7 +324,35 @@ public class CommonController {
 		String tparams = StringUtils.substringBetween(sps, "{", "}");
 		tparams = StringUtils.replace(tparams, "\"", "");
 		Map result = dataService.deleteData(userid,dtId,tparams);
+		
+		//记录日志
+		String opType = "";
+		try{
+			opType = params.getString("opType");
+		}catch(Exception e){
+			log.info(e.toString());
+		}
+		//如果参数中没有指明opType，使用save+数据Id，首字母大写
+		if(StringUtils.isEmpty(opType)){
+			opType = "delete" + dtId.substring(0, 1).toUpperCase()+ dtId.substring(1, dtId.length());
+		}
+		
 		String flag = (String)result.get("flag");
+		if("1".equals(flag)){
+			//记录日志
+			dataService.addLog(opType,params.toJSONString(),userid);
+			jr.setRetCode("0");
+			jr.setRetMsg("");
+			JSONObject oj = new JSONObject();
+			oj.put("info", (String)result.get("info"));
+			jr.setRetData(oj);
+		}else{
+			jr.setRetCode("9");
+			jr.setRetMsg((String)result.get("info"));
+			jr.setRetData(null);
+		}
+		
+		
 		if("1".equals(flag)){
 			jr.setRetCode("0");
 			jr.setRetMsg("");

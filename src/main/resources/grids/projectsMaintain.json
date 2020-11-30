@@ -41,8 +41,7 @@
 		{name: 'ename', type: 'string'},
 		{name: 'xmglflname', type: 'string'},
 		{name: 'ctime', type: 'string'},
-		{name: 'issubmit', type: 'int'},
-		{name: 'status', type: 'int'},
+		{name: 'state', type: 'int'},
 		{name: 'pmanager', type: 'string'}
 	]
 }

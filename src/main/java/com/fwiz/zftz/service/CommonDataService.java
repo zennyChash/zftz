@@ -468,7 +468,7 @@ public class CommonDataService {
 	    }  
 	}
 
-	public Map addLog(String optype, String proid,String pname,String cid,String htbh,String jparams,String userid) {
+	public Map addLog(String optype,String jparams,String userid) {
 		final JSONObject infos = new JSONObject();
 		String proName = cg.getProName("pro_logs");
 		if(proName==null||"".equals(proName)){
@@ -477,31 +477,23 @@ public class CommonDataService {
 			return infos;
 		}
 		StringBuffer sql = new StringBuffer("{call ");
-		sql.append(proName).append("(?,?,?,?,?,?,?,?,?)}");
+		sql.append(proName).append("(?,?,?,?,?)}");
 		String flag = "1";
 		final String[] results = new String[2];
 		try{
 			final String fUser = userid;
-			final String fproid = proid;
-			final String fpname = pname;
-			final String fcid = cid;
-			final String fhtbh = htbh;
-			final String opname = optype;
+			final String foptype = optype;
 			final String fparams = jparams;
 			flag = (String)jdbcTemplate.execute(sql.toString(),new CallableStatementCallback<Object>() {
 				public Object doInCallableStatement(CallableStatement cs)throws SQLException, DataAccessException {
 					cs.setString(1,fUser);
-					cs.setString(2,fproid);
-					cs.setString(3,fpname);
-					cs.setString(4,fcid);
-					cs.setString(5,fhtbh);
-					cs.setString(6,opname);
-					cs.setString(7,fparams);
-	                cs.registerOutParameter(8,Types.VARCHAR);  
-	                cs.registerOutParameter(9,Types.VARCHAR);  
+					cs.setString(2,foptype);
+					cs.setString(3,fparams);
+	                cs.registerOutParameter(4,Types.VARCHAR);  
+	                cs.registerOutParameter(5,Types.VARCHAR);  
 	                cs.execute();  
-	                String tmpflag = cs.getString(8);
-	                String tmpInfo = cs.getString(9);
+	                String tmpflag = cs.getString(4);
+	                String tmpInfo = cs.getString(5);
 	                if(!"1".equals(tmpflag)){
 	                	log.error(tmpInfo);
 	                }

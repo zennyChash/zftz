@@ -1,0 +1,80 @@
+{
+	id:'paymentsMaintain',
+	columns:[
+	{
+		header: "项目",
+		dataIndex: 'pname',
+		width: 180,
+		align: 'left',
+		renderer: renderFoo
+	},{
+	    header: "合同编号",
+	    dataIndex: 'htbh',
+	    width: 90,
+	    align:'left',
+	    renderer :renderFoo
+	},{
+	    header: "申请金额",
+	    dataIndex: 'money',
+	    width: 110,
+	    align:'right',
+		renderer: regMoney
+	},{
+	    header: "用途",
+	    dataIndex: 'purpose',
+	    width: 160,
+	    align:'left',
+	    renderer :renderFoo
+	},{
+	    header: "收款单位",
+	    dataIndex: 'recname',
+	    width: 160,
+	    align:'left',
+	    renderer :renderFoo
+	},{
+	    header: "开户行",
+	    dataIndex: 'recbankname',
+	    width: 150,
+	    align:'left',
+	    renderer :renderFoo
+	},{
+	    header: "账号",
+	    dataIndex: 'recbankno',
+	    width: 110,
+	    align:'left',
+	    renderer :renderFoo
+	},{
+	    header: "制单人",
+	    dataIndex: 'username',
+	    width: 70,
+	    align:'left',
+		renderer: renderFoo
+	},{
+	    header: "审批状态",
+	    dataIndex: 'checkstatus',
+	    width: 70,
+	    align:'left'
+	},{
+	    header: "支付状态",
+	    dataIndex: 'paystatus',
+	    width: 70,
+	    align:'left'
+	}],
+	records:[
+		{name: 'id', type: 'int'},
+	    {name: 'proid', type: 'int'},
+	    {name: 'cid', type: 'int'},
+		{name: 'pname', type: 'string'},
+		{name: 'htbh', type: 'string'},
+		{name: 'money', type: 'float'},
+		{name: 'purpose', type: 'string'},
+		{name: 'recname', type: 'string'},
+		{name: 'recbankname', type: 'string'},
+		{name: 'recbankno', type: 'string'},
+		{name: 'userid', type: 'string'},
+		{name: 'username', type: 'string'},
+		{name: 'state', type: 'int'},
+		{name: 'paystatus', type: 'int'},
+		{name: 'ctime', type: 'string'}
+	]
+}
