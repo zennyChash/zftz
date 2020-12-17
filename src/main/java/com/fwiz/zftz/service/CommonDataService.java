@@ -525,28 +525,11 @@ public class CommonDataService {
 				String phasebm =(String)r.get("phasebm");
 				String phasename =(String)r.get("phasename");
 				//根据阶段bm获取字段详情
-				StringBuffer dsql = new StringBuffer("select fld,fldname name,nvl(isattach,'0') isattach,nvl(canlock,'0') canlock,");
-				dsql.append("nvl(editable,'0') editable,nvl(fldtype,'0') fldtype,option_tb,nvl(hasdetail,'0') hasdetail,nvl(ishidden,'0') ishidden");
-				dsql.append(" from zftz_dictionary where phasebm=?");
-				List flds = jdbcTemplate.queryForList(dsql.toString(),new Object[]{phasebm});
-				List lowerflds = new ArrayList();
-				if(flds!=null&&flds.size()>0){
-					//属性都转化成小写
-					for(int j=0;j<flds.size();j++){
-						Map f = (Map)flds.get(j);
-						Map fv = new HashMap();
-						Iterator it = f.entrySet().iterator();
-			            while(it.hasNext()) {
-			                Entry<String, Object> entry = (Entry)it.next();
-			                fv.put(((String)entry.getKey()).toLowerCase(), f.get(entry.getKey()));
-			            }
-			            lowerflds.add(fv);
-					}
-					
-				}
+				JSONObject fldsinfo = getList("","","","fldsByPhase", "module:"+module+",phasebm:"+phasebm);
+				List flds = fldsinfo.getJSONArray("rows");
 				phase.put("phasebm", phasebm);
 				phase.put("phasename", phasename);
-				phase.put("fields", lowerflds);
+				phase.put("fields", flds);
 				phases.add(phase);
 			}
     	}
@@ -564,16 +547,20 @@ public class CommonDataService {
 			if("queryList".equals(qtype)){
 				if("1".equals(module)){
 					jqps.put("cid", mkey);
-				}else{
+				}else if("0".equals(module)){
 					jqps.put("proid", mkey);
+				}else if("2".equals(module)){
+					jqps.put("paid", mkey);
 				}
 			}else if("getSingleRecord".equals(qtype)){
 				jqps.put("id", mkey);
 			}else if("queryListPaging".equals(qtype)){
 				if("1".equals(module)){
 					jqps.put("cid", mkey);
-				}else{
+				}else if("0".equals(module)){
 					jqps.put("proid", mkey);
+				}else if("2".equals(module)){
+					jqps.put("paid", mkey);
 				}
 			}
 		}
@@ -631,10 +618,11 @@ public class CommonDataService {
 		return infos;
 	}
 	//按指定的执行批次号获取执行结果（任务完成状态+结果列表。状态可用于判断是否继续轮询）
-	public Map pollCheckResults(String userid,String batchid) {
+	public Map pollCheckResults(String userid,String batchid,String rlevel) {
 		Map info = new HashMap();
 		//获取执行结果
-		info = getList(userid,"","","ruleCheckResults", "batchid:"+batchid);
+		System.out.println("ruleCheckResults::参数::"+"batchid:"+batchid+",rlevel:"+rlevel);
+		info = getList(userid,"","","ruleCheckResults", "batchid:"+batchid+",rlevel:"+rlevel);
 		//检查任务执行状态，0：未完，1：完成
 		int status = cg.getTaskStatus(batchid);
 		info.put("status", status);

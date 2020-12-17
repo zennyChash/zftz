@@ -598,7 +598,8 @@ public class CommonController {
 	    	cg.setTaskStatus(batchid, 0);
 			//将任务交给另一个线程去做
 			ExecuteCheckRunnable exeCheck = new ExecuteCheckRunnable(userid,eventBm,batchid,params);
-			new Thread(exeCheck).start();
+			//new Thread(exeCheck).start();
+			exeCheck.run();
 			//请求立刻返回
 			jr.setRetCode("0");
 			jr.setRetMsg("");
@@ -639,7 +640,11 @@ public class CommonController {
 				jr.setRetMsg("未指定要查看的执行批次号！");
 				jr.setRetData("");
 			}else{
-				Map crInfos = dataService.pollCheckResults(userid,batchid);
+				String rlevel = params.get("rlevel");
+				if(StringUtils.isEmpty(rlevel)){
+					rlevel = "0";
+				}
+				Map crInfos = dataService.pollCheckResults(userid,batchid,rlevel);
 				jr.setRetCode("0");
 				jr.setRetMsg("");
 				jr.setRetData(crInfos);

@@ -16,7 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.fwiz.utils.Configuration;
 import com.fwiz.utils.ContextUtil;
 
-public class ExecuteCheckRunnable implements Runnable{
+public class ExecuteCheckRunnable {
 	private String batchid;
 	private String userid;
 	private String eventBm;
@@ -31,7 +31,6 @@ public class ExecuteCheckRunnable implements Runnable{
 		cg = (Configuration)ContextUtil.getBean("config");
 		dataService = (CommonDataService)ContextUtil.getBean("dataService");
 	}
-	@Override
 	public synchronized void run() {
 		//查询事件触发的检查任务
 		List tasks = dataService.getCheckTasks(this.eventBm);
