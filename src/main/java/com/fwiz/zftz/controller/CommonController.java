@@ -67,6 +67,7 @@ public class CommonController {
 		}
 		//测试模式下，会话中没有，则从请求参数中取，这是为了方便单个请求接口测试。
 		if("on".equals(cg.getString("testMode"))){
+			log.info("测试模式开启！");
 			if(StringUtils.isEmpty(userid)){
 				try{
 					userid = jparams.getString("operator");

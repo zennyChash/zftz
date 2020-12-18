@@ -70,6 +70,7 @@ public class CommonDataService {
 		final List rows = new ArrayList();
 		infos.put("totalCount", 0);
 		infos.put("rows", rows);
+		log.info("queryListPaging操作用户id:"+userid);
 		try{
 			@SuppressWarnings("unchecked")
 			Object execute = jdbcTemplate.execute(sql.toString(),new CallableStatementCallback() {
@@ -538,12 +539,19 @@ public class CommonDataService {
 	//2020-11-06对E平台的请求进行处理，统一后缀_ept去掉，再根据流水号（lsh）转换业务id，重置请求参数
 	public String processParamsForEpt(String qtype,JSONObject jqps) {
 		String lsh = jqps.getString("lsh");
-		StringBuffer sql = new StringBuffer("select module,mkey from zftz_eworkflow_instance where lsh=?");
-		Map rst = jdbcTemplate.queryForMap(sql.toString(),new Object[]{lsh});
+		StringBuffer sql = new StringBuffer("select module,mkey,nvl(rbatchid,0)rbatchid from zftz_eworkflow_instance where lsh=?");
+		Map rst = null;
+		try{
+			rst = jdbcTemplate.queryForMap(sql.toString(),new Object[]{lsh});
+		}catch(Exception e){
+			log.error("未找到流水号"+lsh+"的记录！");
+		}
 		if(rst!=null){
 			String module = (String)rst.get("module");
 			BigDecimal dmkey = (BigDecimal)rst.get("mkey");
+			BigDecimal dbid = (BigDecimal)rst.get("rbatchid");
 			long mkey = dmkey.longValue();
+			long batchid = dbid.longValue();
 			if("queryList".equals(qtype)){
 				if("1".equals(module)){
 					jqps.put("cid", mkey);
@@ -563,6 +571,7 @@ public class CommonDataService {
 					jqps.put("paid", mkey);
 				}
 			}
+			jqps.put("batchid", batchid);
 		}
 		return jqps.toJSONString();
 	}
