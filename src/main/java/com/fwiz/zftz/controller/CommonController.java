@@ -88,6 +88,7 @@ public class CommonController {
 		}
 		String tparams = StringUtils.substringBetween(qps, "{", "}");
 		tparams = StringUtils.replace(tparams, "\"", "");
+		log.debug(dtID+":"+tparams);
 		JSONObject jucfg = dataService.getListPaging(userid,start,limit,sort,dir,dtID,tparams);
 		if(jucfg!=null&&jucfg.containsKey("error")){
 			jr.setRetCode("9");

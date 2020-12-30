@@ -199,13 +199,13 @@ public class Configuration {
   		return sjg;
   	}
   	private void loadExtFormFields(){
-  		String path=getString("extFormsRoot","/forms/");
+  		String path=getString("formsRoot","/forms/");
   		System.out.println("form的配置："+path);
   		formFieldsMap =new HashMap();
   		loadExtInfo(path,formFieldsMap);
   	}
   	private void loadExtGrids(){
-  		String path=getString("extGridsRoot","/grids/");
+  		String path=getString("gridsRoot","/grids/");
   		System.out.println("grid的配置："+path);
   		gridsMap =new HashMap();
   		loadExtInfo(path,gridsMap);
@@ -289,7 +289,8 @@ public class Configuration {
     
     public void reloadAllSets(){
     	reloadSystemSets();
-    	reloadSystemSets();
+    	loadProSystemSets();
+    	loadExtGrids();
     }
     //检查规则的任务开始时，将批次号及其状态放入全局map
 	public void setTaskStatus(String tid,int status){
